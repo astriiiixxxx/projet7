@@ -586,6 +586,7 @@ a:focus-visible, button:focus-visible {
 }
 /* overflow tables */
 .table-wrap { overflow-x: auto; }
+@media print{.sidebar,.site-header{display:none!important}.layout{display:block}.main-content{padding-top:0}pre{white-space:pre-wrap}}
 </style>
 </head>
 <body>
@@ -808,7 +809,7 @@ a:focus-visible, button:focus-visible {
         <div class="info-block-title">Authentification et autorisation</div>
         <ul>
           <li>Mots de passe hachés avec bcrypt ou Argon2 (facteur de travail ≥ 12). Aucun mot de passe stocké en clair.</li>
-          <li>Sessions gérées via tokens JWT signés (RS256) avec expiration de 30 minutes pour les tokens d'accès et 7 jours pour les tokens de rafraîchissement.</li>
+          <li>Sessions gérées via tokens JWT signés (RS256) avec expiration de 15 minutes pour les tokens d'accès et 7 jours pour les tokens de rafraîchissement.</li>
           <li>Verrouillage temporaire du compte après 5 tentatives de connexion échouées (15 minutes).</li>
           <li>Authentification à deux facteurs (TOTP/SMS) optionnelle, fortement recommandée.</li>
           <li>HTTPS obligatoire sur l'ensemble des endpoints. En-têtes de sécurité : HSTS, CSP, X-Frame-Options, X-Content-Type-Options.</li>
@@ -1297,7 +1298,7 @@ a:focus-visible, button:focus-visible {
             <div class="ca-label">Critères d'acceptation</div>
             <div class="ca-list">
               <div class="ca-item"><span>CA1 —</span> Étant donné une annulation effectuée plus d'une semaine avant la prise en charge, quand je confirme, alors un remboursement intégral est initié sous 24 heures et un email de confirmation d'annulation m'est envoyé.</div>
-              <div class="ca-item"><span>CA2 —</span> Étant donné une annulation entre 48h et 7 jours avant la prise en charge, quand je confirme, alors uniquement 25 % du montant total est remboursé conformément à la politique tarifaire.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné une annulation à moins de 7 jours avant la prise en charge, quand je confirme, alors uniquement 25 % du montant total est remboursé conformément à la politique tarifaire.</div>
               <div class="ca-item"><span>CA3 —</span> Étant donné que je clique sur "Annuler ma réservation", quand le formulaire de confirmation s'affiche, alors il récapitule le montant qui sera remboursé avant toute action définitive de ma part.</div>
             </div>
           </div>
@@ -1339,7 +1340,7 @@ a:focus-visible, button:focus-visible {
             <div class="ca-list">
               <div class="ca-item"><span>CA1 —</span> Étant donné le tchat ouvert pendant les heures ouvrées (lun–ven 8h–20h, horaire local), quand j'envoie un message, alors un conseiller répond dans un délai maximal de 5 minutes et l'historique du tchat est consultable dans mon profil.</div>
               <div class="ca-item"><span>CA2 —</span> Étant donné le tchat ouvert en dehors des heures ouvrées, quand j'envoie un message, alors un chatbot qualifie la demande et peut créer automatiquement un ticket de support ; un conseiller prend le relais à la réouverture.</div>
-              <div class="ca-item"><span>CA3 —</span> Étant donné Thomas (PSH auditif), quand il utilise le tchat, alors l'interface est entièrement navigable au clavier, les nouveaux messages sont signalés par une notification visuelle et le composant respecte les attributs ARIA de dialogue en direct.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné un utilisateur en situation de handicap (Thomas, navigation au clavier, ou un utilisateur malentendant), quand il utilise le tchat, alors l'interface est entièrement navigable au clavier, les nouveaux messages sont signalés par une notification visuelle et le composant respecte les attributs ARIA de dialogue en direct.</div>
             </div>
           </div>
         </div>

@@ -1,0 +1,19 @@
+sequenceDiagram
+  autonumber
+  actor C as Client
+  participant IA as Service Tchat · instance A
+  participant RD as Redis Pub/Sub
+  participant DB as PostgreSQL
+  participant IB as Service Tchat · instance B
+  actor AG as Agent
+  C->>IA: POST /chat/sessions → session_id
+  C->>IA: WS session:join(session_id)
+  AG->>IB: WS session:join(session_id)
+  IB->>DB: assignAgent · status=active
+  C->>IA: WS message:send
+  IA->>DB: INSERT chat_messages
+  IA->>RD: PUBLISH ycyw:chat:{session_id}
+  RD-->>IA: pmessage
+  RD-->>IB: pmessage
+  IA-->>C: message:received
+  IB-->>AG: message:received

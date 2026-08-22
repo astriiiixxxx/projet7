@@ -1,0 +1,78 @@
+classDiagram
+  direction LR
+  class User {
+    +UUID id
+    +String email
+    +String passwordHash
+    +Role role
+    +String locale
+    +String currency
+    +int loyaltyPoints
+    +bool twoFaEnabled
+    +DateTime deletedAt
+  }
+  class IdentityDocument {
+    +UUID id
+    +DocType type
+    +String encryptedFileKey
+    +Date expiresAt
+  }
+  class Agency {
+    +UUID id
+    +String name
+    +String country
+    +Decimal lat
+    +Decimal lng
+    +JSON openingHours
+    +bool isAccessible
+  }
+  class Vehicle {
+    +UUID id
+    +String acrissCode
+    +String model
+    +bool isAccessible
+    +Decimal dailyRate
+  }
+  class Reservation {
+    +UUID id
+    +DateTime startDate
+    +DateTime endDate
+    +ReservationStatus status
+    +Decimal totalAmount
+    +String currency
+    +JSON options
+    +String stripePaymentIntentId
+    +cancel() Decimal
+    +modify(dates, options)
+  }
+  class ChatSession {
+    +UUID id
+    +ChatStatus status
+    +String subject
+    +assignAgent(agent)
+    +close()
+  }
+  class ChatMessage {
+    +UUID id
+    +SenderRole senderRole
+    +String content
+    +DateTime sentAt
+    +DateTime readAt
+  }
+  class Review {
+    +UUID id
+    +int rating
+    +String comment
+    +ModerationStatus status
+  }
+  User "1" --> "0..*" IdentityDocument : possède
+  User "1" --> "0..*" Reservation : effectue
+  Agency "1" --> "0..*" Vehicle : héberge
+  Vehicle "1" --> "0..*" Reservation : concerne
+  Reservation "*" --> "1" Agency : prise en charge
+  Reservation "*" --> "1" Agency : retour
+  User "1" --> "0..*" ChatSession : client
+  User "0..1" --> "0..*" ChatSession : agent
+  ChatSession "1" *-- "0..*" ChatMessage : contient
+  ChatSession "0..*" --> "0..1" Reservation : concerne
+  Reservation "1" --> "0..1" Review : évaluée par

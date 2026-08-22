@@ -1,0 +1,24 @@
+sequenceDiagram
+  autonumber
+  actor C as Client
+  participant SPA as SPA React
+  participant GW as API Gateway
+  participant R as Service Réservation
+  participant DB as PostgreSQL
+  participant S as Stripe
+  participant N as Service Notification
+  C->>SPA: Valide le récapitulatif
+  SPA->>GW: POST /reservations (JWT)
+  GW->>GW: Vérifie JWT RS256
+  GW->>R: createReservation()
+  R->>DB: BEGIN · vérifie dispo (verrou) · INSERT status=pending
+  R->>S: Create PaymentIntent (montant, devise)
+  S-->>R: client_secret
+  R-->>SPA: 201 + client_secret
+  C->>SPA: Saisit la carte (Stripe Elements)
+  SPA->>S: confirmCardPayment (3D Secure)
+  S-->>SPA: succeeded
+  S->>R: Webhook payment_intent.succeeded (signé)
+  R->>DB: UPDATE status=confirmed
+  R-)N: Événement ReservationConfirmed (queue)
+  N-)C: Email de confirmation (SES, < 2 min)

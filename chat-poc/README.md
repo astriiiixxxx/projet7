@@ -1,7 +1,23 @@
 # YCYW Chat PoC — Tchat Support Temps Réel
 
 Preuve de concept de la fonctionnalité de tchat en temps réel de la plateforme **Your Car Your Way**,
-couvrant les user stories F20 à F23 du cahier des charges v2.0.
+couvrant la fonctionnalité **F21 — Tchat avec le service client** du cahier des charges v2.0.
+
+## Objectif de la PoC
+
+Valider le point le plus risqué de l'architecture cible : **un tchat temps réel qui fonctionne
+lorsque le service est réparti sur plusieurs instances** (pods Kubernetes). Concrètement, la PoC
+vérifie que :
+
+1. un client peut ouvrir une session de support et un agent la rejoindre (F21) ;
+2. les messages sont échangés en temps réel via WebSocket ;
+3. un client et un agent connectés à **deux instances différentes** reçoivent les mêmes messages
+   grâce à Redis Pub/Sub ;
+4. l'historique est persisté dans PostgreSQL et rechargé à la reconnexion (F21 — CA1).
+
+Hors périmètre (simplifications assumées) : authentification réelle (remplacée par un login
+sans mot de passe), chatbot hors heures ouvrées (F21 — CA2), file d'attente et répartition
+automatique des sessions entre agents.
 
 ## Fonctionnalité implémentée
 
@@ -91,6 +107,21 @@ cd frontend && VITE_API_URL=http://localhost:3002 npm run dev -- --port 5174
 
 **Flux Redis** : `message:send` → `saveMessage(DB)` → `publisher.publish(Redis)` → `pmessage` déclenché
 sur les deux instances → chacune émet `message:received` aux sockets locaux de sa room.
+
+## Structure des données
+
+Le schéma SQL complet et commenté est dans [`backend/database/schema.sql`](backend/database/schema.sql)
+(il est aussi appliqué automatiquement au démarrage du backend).
+
+| Table | Rôle | Champs clés |
+|-------|------|-------------|
+| `chat_sessions` | Une conversation client ↔ agent | `id` (UUID), `client_id`, `agent_id`, `status` (`waiting` / `active` / `closed`) |
+| `chat_messages` | Les messages d'une session | `session_id` (FK), `sender_role` (`client` / `agent` / `system`), `content`, `sent_at` |
+
+Côté Redis : `session:{token}` (jeton d'authentification, TTL 24 h) et le canal Pub/Sub
+`ycyw:chat:{sessionId}`.
+
+Les diagrammes UML et le modèle de données de la plateforme cible sont dans [`../docs/uml`](../docs/uml).
 
 ## Structure des fichiers
 

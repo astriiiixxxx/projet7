@@ -1,0 +1,77 @@
+erDiagram
+  USERS ||--o{ RESERVATIONS : effectue
+  USERS ||--o{ IDENTITY_DOCUMENTS : possede
+  AGENCIES ||--o{ VEHICLES : heberge
+  VEHICLES ||--o{ RESERVATIONS : concerne
+  AGENCIES ||--o{ RESERVATIONS : "prise en charge / retour"
+  USERS ||--o{ CHAT_SESSIONS : "client / agent"
+  CHAT_SESSIONS ||--o{ CHAT_MESSAGES : contient
+  RESERVATIONS |o--o{ CHAT_SESSIONS : concerne
+  RESERVATIONS ||--o| REVIEWS : "evaluee par"
+  USERS {
+    uuid id PK
+    varchar email UK
+    varchar password_hash
+    varchar role
+    varchar locale
+    char currency
+    int loyalty_points
+    timestamp deleted_at
+  }
+  IDENTITY_DOCUMENTS {
+    uuid id PK
+    uuid user_id FK
+    varchar doc_type
+    varchar storage_key
+    date expires_at
+  }
+  AGENCIES {
+    uuid id PK
+    varchar name
+    char country
+    decimal lat
+    decimal lng
+    jsonb opening_hours
+    bool is_accessible
+  }
+  VEHICLES {
+    uuid id PK
+    uuid agency_id FK
+    char acriss_code
+    bool is_accessible
+    decimal daily_rate
+  }
+  RESERVATIONS {
+    uuid id PK
+    uuid user_id FK
+    uuid vehicle_id FK
+    uuid pickup_agency_id FK
+    uuid return_agency_id FK
+    timestamp start_date
+    timestamp end_date
+    varchar status
+    decimal total_amount
+    varchar stripe_payment_intent_id UK
+  }
+  CHAT_SESSIONS {
+    uuid id PK
+    uuid client_id FK
+    uuid agent_id FK
+    uuid reservation_id FK
+    varchar status
+    varchar subject
+  }
+  CHAT_MESSAGES {
+    uuid id PK
+    uuid session_id FK
+    uuid sender_id FK
+    varchar sender_role
+    text content
+    timestamp sent_at
+  }
+  REVIEWS {
+    uuid id PK
+    uuid reservation_id FK
+    smallint rating
+    varchar status
+  }
