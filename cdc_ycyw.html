@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Car Your Way — Cahier des Charges</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap">
+<style>
+/* ── Tokens ─────────────────────────────────────────────── */
+:root {
+  --bg:          #F2F5FB;
+  --surface:     #FFFFFF;
+  --surface-2:   #EAEEf8;
+  --border:      #D4DAEA;
+  --text-1:      #0A1628;
+  --text-2:      #3D4F6B;
+  --text-3:      #7A8BA8;
+  --accent:      #1A4FDB;
+  --accent-dim:  #EBF0FD;
+  --warm:        #C97C10;
+  --warm-dim:    #FEF3DC;
+  --must-fg:     #065F46;  --must-bg:    #D1FAE5;
+  --should-fg:   #1E40AF;  --should-bg:  #DBEAFE;
+  --could-fg:    #92400E;  --could-bg:   #FEF3C7;
+  --wont-fg:     #374151;  --wont-bg:    #F3F4F6;
+  --nav-w:       230px;
+  --radius:      8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:          #0C1120;
+    --surface:     #131927;
+    --surface-2:   #1A2235;
+    --border:      #212D45;
+    --text-1:      #DCE4F5;
+    --text-2:      #8B9AB8;
+    --text-3:      #4E607E;
+    --accent:      #5B82F5;
+    --accent-dim:  #1A2B55;
+    --warm:        #F59E0B;
+    --warm-dim:    #292010;
+    --must-fg:     #6EE7B7;  --must-bg:    #064E3B;
+    --should-fg:   #93C5FD;  --should-bg:  #1E3A6E;
+    --could-fg:    #FCD34D;  --could-bg:   #3D2E07;
+    --wont-fg:     #9CA3AF;  --wont-bg:    #1F2937;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:          #0C1120;
+  --surface:     #131927;
+  --surface-2:   #1A2235;
+  --border:      #212D45;
+  --text-1:      #DCE4F5;
+  --text-2:      #8B9AB8;
+  --text-3:      #4E607E;
+  --accent:      #5B82F5;
+  --accent-dim:  #1A2B55;
+  --warm:        #F59E0B;
+  --warm-dim:    #292010;
+  --must-fg:     #6EE7B7;  --must-bg:    #064E3B;
+  --should-fg:   #93C5FD;  --should-bg:  #1E3A6E;
+  --could-fg:    #FCD34D;  --could-bg:   #3D2E07;
+  --wont-fg:     #9CA3AF;  --wont-bg:    #1F2937;
+}
+/* ── Reset & base ──────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text-1);
+  font-family: 'Lora', Georgia, serif;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+/* ── Layout ─────────────────────────────────────────────── */
+.layout {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  gap: 48px;
+}
+/* ── Sidebar nav ────────────────────────────────────────── */
+.sidebar {
+  width: var(--nav-w);
+  flex-shrink: 0;
+  padding-top: 32px;
+}
+.sidebar-inner {
+  position: sticky;
+  top: 24px;
+}
+.sidebar-label {
+  font-family: 'Barlow', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 12px;
+}
+.nav-list { list-style: none; }
+.nav-list li + li { margin-top: 2px; }
+.nav-list a {
+  display: block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-2);
+  text-decoration: none;
+  transition: background .15s, color .15s;
+  border-left: 2px solid transparent;
+}
+.nav-list a:hover,
+.nav-list a.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border-left-color: var(--accent);
+}
+.nav-divider { height: 1px; background: var(--border); margin: 10px 0; }
+.nav-meta {
+  margin-top: 24px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 11.5px;
+  color: var(--text-3);
+  line-height: 1.6;
+}
+/* ── Header ─────────────────────────────────────────────── */
+.site-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 64px;
+}
+.logo-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.logo-icon {
+  width: 36px; height: 36px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-icon svg { fill: #fff; }
+.logo-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: var(--text-1);
+}
+.logo-name span { color: var(--accent); }
+.header-doc-title {
+  margin-left: auto;
+  font-family: 'Barlow', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-3);
+}
+.header-badge {
+  background: var(--warm-dim);
+  color: var(--warm);
+  font-family: 'Barlow', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+/* ── Main content ───────────────────────────────────────── */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding-top: 48px;
+  padding-bottom: 80px;
+}
+/* ── Doc header ─────────────────────────────────────────── */
+.doc-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 36px;
+  margin-bottom: 56px;
+}
+.doc-eyebrow {
+  font-family: 'Barlow', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.doc-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--text-1);
+  text-wrap: balance;
+  margin-bottom: 16px;
+}
+.doc-subtitle {
+  font-size: 17px;
+  color: var(--text-2);
+  max-width: 640px;
+  line-height: 1.65;
+  margin-bottom: 28px;
+}
+.doc-meta-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+.doc-meta-item { display: flex; flex-direction: column; gap: 2px; }
+.doc-meta-label {
+  font-family: 'Barlow', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.doc-meta-value {
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+/* ── Section ────────────────────────────────────────────── */
+.section { margin-bottom: 72px; }
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 32px;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 12px;
+}
+.section-number {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.section-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-1);
+  text-wrap: balance;
+}
+/* ── Prose ──────────────────────────────────────────────── */
+.prose p { margin-bottom: 1em; }
+.prose p:last-child { margin-bottom: 0; }
+.prose strong { font-weight: 700; color: var(--text-1); }
+.subsection-title {
+  font-family: 'Barlow', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-1);
+  margin: 28px 0 12px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+/* ── Persona cards ──────────────────────────────────────── */
+.persona-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+.persona-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.persona-card-head {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.persona-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.avatar-blue  { background: var(--accent-dim); }
+.avatar-green { background: #D1FAE5; }
+.avatar-amber { background: var(--warm-dim); }
+.persona-name {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-1);
+}
+.persona-role {
+  font-family: 'Barlow', sans-serif;
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+.persona-body { padding: 16px 20px 20px; }
+.persona-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+.persona-row:last-child { margin-bottom: 0; }
+.persona-row-label {
+  font-family: 'Barlow', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  flex-shrink: 0;
+  padding-top: 2px;
+  min-width: 76px;
+}
+/* ── Info block ─────────────────────────────────────────── */
+.info-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+.info-block-title {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text-1);
+  margin-bottom: 8px;
+}
+.info-block ul {
+  padding-left: 18px;
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.65;
+}
+.info-block ul li { margin-bottom: 4px; }
+.info-block ul li:last-child { margin-bottom: 0; }
+/* ── Feature list ───────────────────────────────────────── */
+.feature-group { margin-bottom: 36px; }
+.feature-group-title {
+  font-family: 'Barlow', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.feature-table { width: 100%; border-collapse: collapse; }
+.feature-table th {
+  font-family: 'Barlow', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  text-align: left;
+  padding: 6px 12px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+.feature-table td {
+  padding: 9px 12px;
+  font-size: 14px;
+  color: var(--text-2);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.feature-table tr:last-child td { border-bottom: none; }
+.feature-table tr { background: var(--surface); }
+.feature-table tr:hover { background: var(--surface-2); }
+.feature-id {
+  font-family: 'Barlow', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-3);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.feature-name { font-weight: 500; color: var(--text-1); }
+.feature-tag {
+  display: inline-block;
+  font-family: 'Barlow', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+.tag-new { background: var(--warm-dim); color: var(--warm); }
+.tag-v1  { background: var(--accent-dim); color: var(--accent); }
+/* ── MoSCoW badges ──────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  font-family: 'Barlow', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.badge-must   { background: var(--must-bg);   color: var(--must-fg); }
+.badge-should { background: var(--should-bg); color: var(--should-fg); }
+.badge-could  { background: var(--could-bg);  color: var(--could-fg); }
+.badge-wont   { background: var(--wont-bg);   color: var(--wont-fg); }
+/* ── User story cards ───────────────────────────────────── */
+.us-group { margin-bottom: 40px; }
+.us-group-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-1);
+  padding: 10px 0 10px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+.us-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.us-card-head {
+  padding: 14px 18px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.us-fid {
+  font-family: 'Barlow', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-3);
+  letter-spacing: .06em;
+}
+.us-title {
+  font-family: 'Barlow', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-1);
+  flex: 1;
+}
+.us-body { padding: 14px 18px 16px; }
+.us-story {
+  font-size: 14.5px;
+  color: var(--text-2);
+  margin-bottom: 14px;
+  line-height: 1.6;
+  font-style: italic;
+}
+.us-story em { font-style: normal; font-weight: 600; color: var(--text-1); }
+.ca-label {
+  font-family: 'Barlow', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 8px;
+}
+.ca-list { display: flex; flex-direction: column; gap: 8px; }
+.ca-item {
+  background: var(--surface-2);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  color: var(--text-2);
+  line-height: 1.55;
+}
+.ca-item span { font-weight: 600; color: var(--text-1); font-family: 'Barlow', sans-serif; font-size: 12px; }
+/* ── NFR grid ───────────────────────────────────────────── */
+.nfr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+.nfr-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.nfr-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: var(--accent-dim);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+.nfr-title {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-1);
+  margin-bottom: 12px;
+}
+.nfr-rows { display: flex; flex-direction: column; gap: 8px; }
+.nfr-row { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; }
+.nfr-row-key { color: var(--text-2); flex: 1; }
+.nfr-row-val {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--accent);
+  text-align: right;
+  flex-shrink: 0;
+  margin-left: 12px;
+  font-variant-numeric: tabular-nums;
+}
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 24px 0;
+  margin-top: 40px;
+}
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.footer-copy {
+  font-family: 'Barlow', sans-serif;
+  font-size: 12px;
+  color: var(--text-3);
+}
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 820px) {
+  .sidebar { display: none; }
+  .layout { padding: 0 16px; }
+  .main-content { padding-top: 32px; }
+  .persona-grid { grid-template-columns: 1fr; }
+  .nfr-grid { grid-template-columns: 1fr; }
+}
+/* ── Reduced motion ─────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+/* ── Focus ──────────────────────────────────────────────── */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+/* overflow tables */
+.table-wrap { overflow-x: auto; }
+</style>
+</head>
+<body>
+
+<!-- ── Header ─────────────────────────────────────────── -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo-mark" href="#">
+      <div class="logo-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-5h14v5z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg>
+      </div>
+      <span class="logo-name">Your Car <span>Your Way</span></span>
+    </a>
+    <span class="header-doc-title">Cahier des Charges — Application Web Centralisée</span>
+    <span class="header-badge">V2.0 · 2026</span>
+  </div>
+</header>
+
+<!-- ── Body ───────────────────────────────────────────── -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <nav class="sidebar" aria-label="Navigation du document">
+    <div class="sidebar-inner">
+      <div class="sidebar-label">Sommaire</div>
+      <ul class="nav-list">
+        <li><a href="#personas">1. Personas</a></li>
+        <li><a href="#transverses">2. Considérations transverses</a></li>
+        <li><a href="#fonctionnalites">3. Fonctionnalités</a></li>
+        <li><a href="#user-stories">4. User Stories</a></li>
+        <li><a href="#nfr">5. Exigences non fonctionnelles</a></li>
+      </ul>
+      <div class="nav-divider"></div>
+      <div class="nav-meta">
+        <strong>Version</strong> 2.0 — Draft<br>
+        <strong>Date</strong> Août 2026<br>
+        <strong>Statut</strong> En révision<br>
+        <strong>Auteur</strong> Architecture Logicielle
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="main-content">
+
+    <!-- Doc header -->
+    <div class="doc-header">
+      <div class="doc-eyebrow">Application Web Centralisée · Spécifications Fonctionnelles</div>
+      <h1 class="doc-title">Cahier des Charges<br>Your Car Your Way</h1>
+      <p class="doc-subtitle">Ce document définit l'ensemble des exigences fonctionnelles et non fonctionnelles de la nouvelle application web centralisée, destinée à remplacer les sept applications nationales existantes par une plateforme unique, accessible et internationalisée.</p>
+      <div class="doc-meta-grid">
+        <div class="doc-meta-item">
+          <span class="doc-meta-label">Version</span>
+          <span class="doc-meta-value">2.0 — Draft</span>
+        </div>
+        <div class="doc-meta-item">
+          <span class="doc-meta-label">Date</span>
+          <span class="doc-meta-value">Août 2026</span>
+        </div>
+        <div class="doc-meta-item">
+          <span class="doc-meta-label">Périmètre</span>
+          <span class="doc-meta-value">FR · DE · ES · IT · UK · CA · US</span>
+        </div>
+        <div class="doc-meta-item">
+          <span class="doc-meta-label">Référentiel</span>
+          <span class="doc-meta-value">WCAG 2.1 AA · RGPD · ACRISS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- 1. PERSONAS                                        -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <section class="section" id="personas">
+      <div class="section-header">
+        <span class="section-number">Section 01</span>
+        <h2 class="section-title">Personas et Profils Utilisateurs</h2>
+      </div>
+      <div class="prose" style="margin-bottom:24px;">
+        <p>Trois personas principaux ont été identifiés à partir des données d'usage collectées sur les applications existantes. Ils représentent les besoins les plus distincts et servent de référence pour prioriser les fonctionnalités et valider les critères d'accessibilité.</p>
+      </div>
+      <div class="persona-grid">
+
+        <!-- P1 -->
+        <div class="persona-card">
+          <div class="persona-card-head">
+            <div class="persona-avatar avatar-blue">🧑‍💼</div>
+            <div>
+              <div class="persona-name">Sophie Martin</div>
+              <div class="persona-role">Client standard — Voyageuse active</div>
+            </div>
+          </div>
+          <div class="persona-body">
+            <div class="persona-row">
+              <span class="persona-row-label">Profil</span>
+              <span>34 ans, cadre marketing, Paris. Loue 6 à 8 fois par an pour affaires et loisirs.</span>
+            </div>
+            <div class="persona-row">
+              <span class="persona-row-label">Besoins</span>
+              <span>Réserver rapidement depuis son mobile, comparer les offres, gérer ses réservations à distance.</span>
+            </div>
+            <div class="persona-row">
+              <span class="persona-row-label">Frustrations</span>
+              <span>Interfaces différentes selon le pays, impossibilité de voir l'historique global, processus de paiement long.</span>
+            </div>
+            <div class="persona-row">
+              <span class="persona-row-label">Attentes</span>
+              <span>Une application fluide, un historique centralisé, des notifications proactives et un programme de fidélité.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- P2 -->
+        <div class="persona-card">
+          <div class="persona-card-head">
+            <div class="persona-avatar avatar-green">♿</div>
+            <div>
+              <div class="persona-name">Thomas Leroux</div>
+              <div class="persona-role">PSH — Handicap moteur</div>
+            </div>
+          </div>
+          <div class="persona-body">
+            <div class="persona-row">
+              <span class="persona-row-label">Profil</span>
+              <span>52 ans, consultant indépendant, Lyon. Mobilité réduite suite à un accident — utilise un fauteuil roulant.</span>
+            </div>
+            <div class="persona-row">
+              <span class="persona-row-label">Besoins</span>
+              <span>Filtrer les agences accessibles PMR, sélectionner des véhicules adaptés (commandes au volant), accéder au service client facilement.</span>
+            </div>
+            <div class="persona-row">
+              <span class="persona-row-label">Frustrations</span>
+              <span>Manque de filtres dédiés PSH, formulaires difficiles à naviguer au clavier, CAPTCHA inaccessibles.</span>
+            </div>
+            <div class="persona-row">
+              <span class="persona-row-label">Attentes</span>
+              <span>Navigation entièrement au clavier, marquage ARIA complet, options PMR visibles dès la recherche.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- P3 -->
+        <div class="persona-card">
+          <div class="persona-card-head">
+            <div class="persona-avatar avatar-amber">🌏</div>
+            <div>
+              <div class="persona-name">Mei Lin Zhang</div>
+              <div class="persona-role">Cliente internationale — Touriste</div>
+            </div>
+          </div>
+          <div class="persona-body">
+            <div class="persona-row">
+              <span class="persona-row-label">Profil</span>
+              <span>28 ans, ingénieure, Shanghai. Visite l'Europe deux fois par an. Maîtrise limitée du français et de l'anglais.</span>
+            </div>
+            <div class="persona-row">
+              <span class="persona-row-label">Besoins</span>
+              <span>Interface en chinois simplifié, prix en CNY ou EUR, formats de date conformes à sa région, assistance tchat multilingue.</span>
+            </div>
+            <div class="persona-row">
+              <span class="persona-row-label">Frustrations</span>
+              <span>Sites uniquement en langue locale, confusion sur les conditions d'annulation, vérification de permis international complexe.</span>
+            </div>
+            <div class="persona-row">
+              <span class="persona-row-label">Attentes</span>
+              <span>Détection automatique de la langue, aide au tchat en plusieurs langues, gestion simplifiée des documents internationaux.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- 2. CONSIDÉRATIONS TRANSVERSES                     -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <section class="section" id="transverses">
+      <div class="section-header">
+        <span class="section-number">Section 02</span>
+        <h2 class="section-title">Considérations Transverses</h2>
+      </div>
+
+      <div class="subsection-title">2.1 — Accessibilité (WCAG 2.1 niveau AA)</div>
+      <p class="prose" style="margin-bottom:14px;">L'application doit être conforme au référentiel WCAG 2.1 niveau AA dans sa totalité. Cette conformité couvre l'ensemble des interfaces utilisateur, des formulaires, des contenus générés dynamiquement et des communications (emails, notifications).</p>
+      <div class="info-block">
+        <div class="info-block-title">Points clés de conformité</div>
+        <ul>
+          <li><strong>Perceivable :</strong> Toutes les images non décoratives ont un texte alternatif. Les contenus vidéo disposent de sous-titres. Le ratio de contraste texte/fond est ≥ 4,5:1 (texte normal) et ≥ 3:1 (grand texte).</li>
+          <li><strong>Operable :</strong> La navigation complète est possible au clavier uniquement. L'ordre de focus est logique et visible. Aucun délai inférieur à 20 secondes n'est imposé sans possibilité de prolongation. Les animations respectent <code>prefers-reduced-motion</code>.</li>
+          <li><strong>Understandable :</strong> Les libellés de formulaires sont associés à leurs champs (<code>&lt;label for&gt;</code>). Les messages d'erreur identifient le champ concerné et proposent une correction. La langue de la page est déclarée (<code>lang</code>).</li>
+          <li><strong>Robust :</strong> Le balisage HTML est valide. Les composants dynamiques (modales, accordéons, tooltips) utilisent les rôles ARIA appropriés (<code>role</code>, <code>aria-expanded</code>, <code>aria-live</code>). Les notifications dynamiques sont annoncées via <code>aria-live="polite"</code>.</li>
+          <li><strong>Spécifique PSH moteur :</strong> Zone de clic minimale de 44×44px. Pas de fonctionnalité déclenchée uniquement au survol (<code>:hover</code>). Compatibilité avec les technologies d'assistance (JAWS, NVDA, VoiceOver).</li>
+          <li><strong>Spécifique PSH visuel :</strong> Mode contraste élevé disponible dans les paramètres. Taille de texte augmentable jusqu'à 200 % sans perte de fonctionnalité. Compatibilité lecteur d'écran validée.</li>
+          <li><strong>Spécifique PSH auditif :</strong> Absence de contenu purement sonore. Indicateurs visuels pour toutes les alertes (pas uniquement sonores). Transcription des contenus audio optionnels.</li>
+        </ul>
+      </div>
+
+      <div class="subsection-title">2.2 — Internationalisation</div>
+      <div class="info-block">
+        <div class="info-block-title">Langues supportées au lancement</div>
+        <ul>
+          <li>Français (FR), Anglais (EN), Allemand (DE), Espagnol (ES), Italien (IT), Chinois simplifié (ZH)</li>
+          <li>Architecture i18n basée sur des fichiers de traduction (ex : format ICU) pour faciliter l'ajout de nouvelles langues sans refactorisation.</li>
+          <li>Détection automatique de la langue du navigateur à la première visite, avec possibilité de changement manuel persisté dans le profil.</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <div class="info-block-title">Devises et formats régionaux</div>
+        <ul>
+          <li><strong>Devises :</strong> EUR, GBP, USD, CAD, CNY — conversion en temps réel via API de taux de change (ex : Open Exchange Rates). Affichage indicatif uniquement ; la devise de facturation est fixée à la création de réservation.</li>
+          <li><strong>Formats de date :</strong> DD/MM/YYYY (Europe), MM/DD/YYYY (US/CA), YYYY-MM-DD (ISO, Asie). Déterminé par la locale sélectionnée.</li>
+          <li><strong>Heure :</strong> Format 24h (Europe) ou 12h AM/PM (US/CA/UK) selon la locale.</li>
+          <li><strong>Séparateurs numériques :</strong> Conformes à la locale (ex : 1.234,56 € en français, 1,234.56 $ en anglais).</li>
+          <li><strong>Adresses :</strong> Formulaires adaptés aux conventions locales (code postal, état/région selon le pays).</li>
+        </ul>
+      </div>
+
+      <div class="subsection-title">2.3 — Sécurité et Protection des Données (RGPD)</div>
+      <div class="info-block">
+        <div class="info-block-title">Authentification et autorisation</div>
+        <ul>
+          <li>Mots de passe hachés avec bcrypt ou Argon2 (facteur de travail ≥ 12). Aucun mot de passe stocké en clair.</li>
+          <li>Sessions gérées via tokens JWT signés (RS256) avec expiration de 30 minutes pour les tokens d'accès et 7 jours pour les tokens de rafraîchissement.</li>
+          <li>Verrouillage temporaire du compte après 5 tentatives de connexion échouées (15 minutes).</li>
+          <li>Authentification à deux facteurs (TOTP/SMS) optionnelle, fortement recommandée.</li>
+          <li>HTTPS obligatoire sur l'ensemble des endpoints. En-têtes de sécurité : HSTS, CSP, X-Frame-Options, X-Content-Type-Options.</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <div class="info-block-title">RGPD — Droits des personnes</div>
+        <ul>
+          <li><strong>Droit d'accès :</strong> Export des données personnelles disponible depuis le profil (format JSON ou CSV), traité sous 72 heures.</li>
+          <li><strong>Droit de rectification :</strong> Modification des données personnelles disponible en libre-service depuis le profil.</li>
+          <li><strong>Droit à l'effacement :</strong> Suppression du compte avec confirmation par mot de passe. Données purgées après la durée légale de conservation (5 ans pour les données comptables).</li>
+          <li><strong>Consentement explicite :</strong> Bandeau cookies conforme, recueil du consentement séparé par finalité (analytics, marketing, fonctionnel).</li>
+          <li><strong>Minimisation des données :</strong> Seules les données strictement nécessaires sont collectées. Les numéros de carte bancaire ne transitent jamais par nos serveurs (Stripe).</li>
+          <li><strong>DPO :</strong> Délégué à la Protection des Données désigné, coordonnées accessibles depuis la politique de confidentialité.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- 3. FONCTIONNALITÉS                                 -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <section class="section" id="fonctionnalites">
+      <div class="section-header">
+        <span class="section-number">Section 03</span>
+        <h2 class="section-title">Liste Exhaustive des Fonctionnalités</h2>
+      </div>
+      <p class="prose" style="margin-bottom:24px;">Les fonctionnalités sont regroupées par domaine fonctionnel. Les fonctionnalités marquées <span class="feature-tag tag-v1">V1</span> sont issues du cahier des charges initial. Les fonctionnalités marquées <span class="feature-tag tag-new">Nouveau</span> sont ajoutées à la V2 avec leur justification.</p>
+
+      <!-- A. Auth -->
+      <div class="feature-group">
+        <div class="feature-group-title">A — Authentification &amp; Gestion du Compte</div>
+        <div class="table-wrap">
+        <table class="feature-table">
+          <thead><tr><th>ID</th><th>Fonctionnalité</th><th>Version</th><th>Justification</th></tr></thead>
+          <tbody>
+            <tr><td class="feature-id">F01</td><td class="feature-name">Inscription</td><td><span class="feature-tag tag-new">Nouveau</span></td><td>Prérequis fondamental absent de la V1.</td></tr>
+            <tr><td class="feature-id">F02</td><td class="feature-name">Connexion</td><td><span class="feature-tag tag-new">Nouveau</span></td><td>Prérequis fondamental absent de la V1.</td></tr>
+            <tr><td class="feature-id">F03</td><td class="feature-name">Déconnexion</td><td><span class="feature-tag tag-new">Nouveau</span></td><td>Sécurité des sessions, usage partagé.</td></tr>
+            <tr><td class="feature-id">F04</td><td class="feature-name">Réinitialisation du mot de passe</td><td><span class="feature-tag tag-new">Nouveau</span></td><td>Autonomie utilisateur, réduction du support.</td></tr>
+            <tr><td class="feature-id">F05</td><td class="feature-name">Authentification à deux facteurs (2FA)</td><td><span class="feature-tag tag-new">Nouveau</span></td><td>Protection renforcée des données bancaires et personnelles.</td></tr>
+            <tr><td class="feature-id">F06</td><td class="feature-name">Consulter son profil</td><td><span class="feature-tag tag-v1">V1</span></td><td>—</td></tr>
+            <tr><td class="feature-id">F07</td><td class="feature-name">Modifier ses informations personnelles</td><td><span class="feature-tag tag-v1">V1</span></td><td>—</td></tr>
+            <tr><td class="feature-id">F08</td><td class="feature-name">Supprimer son compte</td><td><span class="feature-tag tag-v1">V1</span></td><td>—</td></tr>
+            <tr><td class="feature-id">F09</td><td class="feature-name">Gestion des documents d'identité</td><td><span class="feature-tag tag-new">Nouveau</span></td><td>Pré-remplissage des réservations, conformité internationale (permis étranger).</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <!-- B. Search -->
+      <div class="feature-group">
+        <div class="feature-group-title">B — Recherche &amp; Découverte</div>
+        <div class="table-wrap">
+        <table class="feature-table">
+          <thead><tr><th>ID</th><th>Fonctionnalité</th><th>Version</th><th>Justification</th></tr></thead>
+          <tbody>
+            <tr><td class="feature-id">F10</td><td class="feature-name">Consulter la liste des agences</td><td><span class="feature-tag tag-v1">V1</span></td><td>—</td></tr>
+            <tr><td class="feature-id">F11</td><td class="feature-name">Géolocalisation des agences sur carte</td><td><span class="feature-tag tag-new">Nouveau</span></td><td>Expérience utilisateur indispensable — clients en déplacement, touristes.</td></tr>
+            <tr><td class="feature-id">F12</td><td class="feature-name">Rechercher des offres (ACRISS)</td><td><span class="feature-tag tag-v1">V1</span></td><td>—</td></tr>
+            <tr><td class="feature-id">F13</td><td class="feature-name">Consulter le détail d'une offre</td><td><span class="feature-tag tag-v1">V1</span></td><td>—</td></tr>
+            <tr><td class="feature-id">F14</td><td class="feature-name">Comparer des offres (jusqu'à 3)</td><td><span class="feature-tag tag-new">Nouveau</span></td><td>Aide à la décision, réduction du taux d'abandon. Présente dans toutes les plateformes concurrentes.</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <!-- C. Reservation -->
+      <div class="feature-group">
+        <div class="feature-group-title">C — Réservation &amp; Paiement</div>
+        <div class="table-wrap">
+        <table class="feature-table">
+          <thead><tr><th>ID</th><th>Fonctionnalité</th><th>Version</th><th>Justification</th></tr></thead>
+          <tbody>
+            <tr><td class="feature-id">F15</td><td class="feature-name">Réserver une location</td><td><span class="feature-tag tag-v1">V1</span></td><td>—</td></tr>
+            <tr><td class="feature-id">F16</td><td class="feature-name">Options complémentaires (assurance, GPS, PMR, siège enfant)</td><td><span class="feature-tag tag-new">Nouveau</span></td><td>Upsell, personnalisation, accessibilité PSH moteur.</td></tr>
+            <tr><td class="feature-id">F17</td><td class="feature-name">Paiement sécurisé via Stripe</td><td><span class="feature-tag tag-v1">V1</span></td><td>—</td></tr>
+            <tr><td class="feature-id">F18</td><td class="feature-name">Modifier une réservation</td><td><span class="feature-tag tag-v1">V1</span></td><td>—</td></tr>
+            <tr><td class="feature-id">F19</td><td class="feature-name">Annuler une réservation</td><td><span class="feature-tag tag-v1">V1</span></td><td>—</td></tr>
+            <tr><td class="feature-id">F20</td><td class="feature-name">Consulter l'historique des réservations</td><td><span class="feature-tag tag-v1">V1</span></td><td>—</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <!-- D. Service -->
+      <div class="feature-group">
+        <div class="feature-group-title">D — Service Client &amp; Communication</div>
+        <div class="table-wrap">
+        <table class="feature-table">
+          <thead><tr><th>ID</th><th>Fonctionnalité</th><th>Version</th><th>Justification</th></tr></thead>
+          <tbody>
+            <tr><td class="feature-id">F21</td><td class="feature-name">Tchat avec le service client</td><td><span class="feature-tag tag-new">Nouveau</span></td><td>Réduction des appels téléphoniques, assistance en temps réel, indispensable pour les clients internationaux.</td></tr>
+            <tr><td class="feature-id">F22</td><td class="feature-name">Notifications (email &amp; push)</td><td><span class="feature-tag tag-new">Nouveau</span></td><td>Confirmation, rappels avant prise en charge, alertes de modification. Réduit les no-shows.</td></tr>
+            <tr><td class="feature-id">F23</td><td class="feature-name">Avis et évaluations</td><td><span class="feature-tag tag-new">Nouveau</span></td><td>Amélioration continue de la qualité de service, confiance sociale, aide à la décision.</td></tr>
+            <tr><td class="feature-id">F24</td><td class="feature-name">Programme de fidélité</td><td><span class="feature-tag tag-new">Nouveau</span></td><td>Rétention client, différenciation concurrentielle, valorisation des clients fréquents.</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <!-- E. Settings -->
+      <div class="feature-group">
+        <div class="feature-group-title">E — Paramètres &amp; Personnalisation</div>
+        <div class="table-wrap">
+        <table class="feature-table">
+          <thead><tr><th>ID</th><th>Fonctionnalité</th><th>Version</th><th>Justification</th></tr></thead>
+          <tbody>
+            <tr><td class="feature-id">F25</td><td class="feature-name">Sélection de la langue et de la devise</td><td><span class="feature-tag tag-new">Nouveau</span></td><td>Internationalisation — marché cible multi-pays et multi-langue.</td></tr>
+            <tr><td class="feature-id">F26</td><td class="feature-name">Paramètres d'accessibilité</td><td><span class="feature-tag tag-new">Nouveau</span></td><td>Conformité WCAG 2.1 AA, inclusivité des PSH, contractualisation B2B.</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <!-- F. API -->
+      <div class="feature-group">
+        <div class="feature-group-title">F — API &amp; Intégration Agence</div>
+        <div class="table-wrap">
+        <table class="feature-table">
+          <thead><tr><th>ID</th><th>Fonctionnalité</th><th>Version</th><th>Justification</th></tr></thead>
+          <tbody>
+            <tr><td class="feature-id">F27</td><td class="feature-name">API CRUD agence (utilisateurs, réservations, véhicules)</td><td><span class="feature-tag tag-v1">V1</span></td><td>—</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- 4. USER STORIES                                    -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <section class="section" id="user-stories">
+      <div class="section-header">
+        <span class="section-number">Section 04</span>
+        <h2 class="section-title">User Stories</h2>
+      </div>
+      <p class="prose" style="margin-bottom:32px;">Chaque fonctionnalité est décrite par une user story au format standard, accompagnée de trois critères d'acceptation en format Gherkin (Étant donné / Quand / Alors) et d'une priorisation MoSCoW.</p>
+
+      <!-- Groupe A -->
+      <div class="us-group">
+        <div class="us-group-title">A — Authentification &amp; Gestion du Compte</div>
+
+        <!-- F01 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F01</span>
+            <span class="us-title">Inscription</span>
+            <span class="badge badge-must">Must Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant que</em> visiteur non enregistré, <em>je veux</em> créer un compte, <em>afin de</em> pouvoir réserver des véhicules et gérer mes locations sur la plateforme.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné un formulaire d'inscription, quand je saisis une adresse email valide et un mot de passe conforme (≥ 8 caractères, 1 majuscule, 1 chiffre), alors mon compte est créé et je reçois un email de confirmation dans les 2 minutes.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné une adresse email déjà enregistrée, quand je tente de m'inscrire avec cette adresse, alors un message d'erreur explicite m'informe que cet email est déjà associé à un compte existant.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné un mot de passe ne respectant pas les règles de complexité, quand je soumets le formulaire, alors le système bloque la soumission et indique précisément les critères non satisfaits.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F02 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F02</span>
+            <span class="us-title">Connexion</span>
+            <span class="badge badge-must">Must Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur enregistré, <em>je veux</em> me connecter à mon espace personnel, <em>afin d'</em>accéder à mes réservations et gérer mon compte en toute sécurité.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné un email et un mot de passe valides, quand je soumets le formulaire, alors je suis authentifié et redirigé vers mon tableau de bord en moins d'une seconde.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné 5 tentatives de connexion échouées consécutives, quand je tente une nouvelle connexion, alors le compte est temporairement verrouillé pendant 15 minutes et un email d'alerte est envoyé.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné un utilisateur PSH naviguant au clavier et avec lecteur d'écran, quand il parcourt le formulaire de connexion, alors tous les champs sont correctement labellisés et les erreurs sont annoncées via <code>aria-live</code>.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F03 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F03</span>
+            <span class="us-title">Déconnexion</span>
+            <span class="badge badge-must">Must Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur connecté, <em>je veux</em> me déconnecter de mon compte, <em>afin de</em> sécuriser mon espace personnel, notamment sur un appareil partagé ou public.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné un utilisateur connecté, quand il clique sur "Se déconnecter", alors sa session est invalidée côté serveur (révocation du token) et il est redirigé vers la page d'accueil.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné une session expirée (inactivité de 30 minutes), quand l'utilisateur tente d'accéder à une page protégée, alors il est redirigé vers la page de connexion avec un message explicatif.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné une déconnexion effectuée, quand l'utilisateur appuie sur le bouton "Précédent" du navigateur, alors les pages protégées ne sont pas accessibles sans reconnexion.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F04 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F04</span>
+            <span class="us-title">Réinitialisation du mot de passe</span>
+            <span class="badge badge-must">Must Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur ayant oublié son mot de passe, <em>je veux</em> recevoir un lien de réinitialisation par email, <em>afin de</em> retrouver l'accès à mon compte de manière autonome.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné une adresse email enregistrée soumise dans le formulaire de réinitialisation, quand la demande est traitée, alors un email contenant un lien sécurisé à usage unique valable 24 heures est envoyé.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné un lien de réinitialisation expiré ou déjà utilisé, quand l'utilisateur clique dessus, alors le système affiche un message d'erreur explicite et propose de demander un nouveau lien.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné un lien valide et un nouveau mot de passe conforme saisi, quand l'utilisateur confirme, alors le mot de passe est mis à jour et l'utilisateur est automatiquement connecté à son compte.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F05 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F05</span>
+            <span class="us-title">Authentification à deux facteurs (2FA)</span>
+            <span class="badge badge-should">Should Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur soucieux de la sécurité de mon compte, <em>je veux</em> activer l'authentification à deux facteurs, <em>afin de</em> protéger mes données personnelles et informations bancaires contre les accès non autorisés.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné la 2FA activée, quand je me connecte avec mes identifiants corrects, alors le système m'envoie un code OTP à 6 chiffres par SMS ou email, valable 5 minutes.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné un code OTP erroné saisi, quand je soumets le formulaire, alors le système signale l'erreur et me permet de demander un nouveau code après 60 secondes.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné une demande de désactivation de la 2FA, quand je confirme cette action, alors le système exige une validation préalable par OTP avant de désactiver la fonctionnalité.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F06 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F06</span>
+            <span class="us-title">Consulter son profil</span>
+            <span class="badge badge-must">Must Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur connecté, <em>je veux</em> consulter mon profil, <em>afin de</em> vérifier l'exactitude de mes informations personnelles et l'état de mon compte.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné un utilisateur connecté accédant à son profil, quand la page se charge, alors ses informations (nom, prénom, email, date de naissance, adresse, solde de points) sont affichées en moins de 2 secondes.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné Thomas (PSH), quand il navigue sur la page profil au clavier, alors l'ordre de focus est logique, tous les éléments ont un libellé accessible et la structure de page est correctement balisée (landmarks ARIA).</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné Mei Lin (cliente internationale), quand elle consulte son profil, alors la date de naissance est affichée dans le format de sa locale sélectionnée (YYYY-MM-DD pour ZH).</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F07 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F07</span>
+            <span class="us-title">Modifier ses informations personnelles</span>
+            <span class="badge badge-must">Must Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur, <em>je veux</em> modifier mes informations personnelles, <em>afin de</em> maintenir mes données à jour et garantir le bon déroulement de mes futures locations.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné un formulaire de modification valide soumis, quand la sauvegarde est confirmée, alors les nouvelles informations sont persistées et un email de confirmation m'est envoyé dans les 2 minutes.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné une modification de l'adresse email, quand je soumets le changement, alors un lien de vérification est envoyé à la nouvelle adresse et le changement n'est effectif qu'après confirmation.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné une valeur invalide saisie (ex : date de naissance dans le futur), quand je soumets le formulaire, alors des messages d'erreur clairs identifient chaque champ problématique avec une suggestion de correction.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F08 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F08</span>
+            <span class="us-title">Supprimer son compte</span>
+            <span class="badge badge-must">Must Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur, <em>je veux</em> supprimer mon compte, <em>afin d'</em>exercer mon droit à l'effacement conformément au RGPD et de cesser l'utilisation du service.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné une demande de suppression avec saisie du mot de passe correcte, quand je confirme, alors mon compte est marqué pour suppression et un email récapitulatif m'est envoyé avec la date d'effacement définitif.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné une réservation active au moment de la demande de suppression, quand j'initie la suppression, alors le système me bloque et m'informe qu'une location en cours empêche la suppression immédiate.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné une suppression confirmée, quand la durée légale de conservation est atteinte (5 ans pour les données comptables), alors toutes les données personnelles sont définitivement et irréversiblement purgées.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F09 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F09</span>
+            <span class="us-title">Gestion des documents d'identité</span>
+            <span class="badge badge-should">Should Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur, <em>je veux</em> téléverser et gérer mes documents d'identité (permis de conduire, passeport) dans mon profil, <em>afin de</em> faciliter mes réservations et répondre aux exigences de vérification d'identité.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné un fichier PDF ou image (JPG, PNG) de moins de 5 Mo, quand je le téléverse, alors il est stocké de manière chiffrée (AES-256) et associé à mon profil avec son type et sa date d'expiration.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné un document dont la date d'expiration est à moins de 60 jours, quand le système vérifie les dates, alors l'utilisateur reçoit une notification par email l'invitant à mettre à jour son document.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné un document d'identité validé, quand l'utilisateur initie une nouvelle réservation, alors les champs d'identité (nom, prénom, numéro de document) sont pré-remplis automatiquement depuis le document vérifié.</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /group A -->
+
+      <!-- Groupe B -->
+      <div class="us-group">
+        <div class="us-group-title">B — Recherche &amp; Découverte</div>
+
+        <!-- F10 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F10</span>
+            <span class="us-title">Consulter la liste des agences</span>
+            <span class="badge badge-must">Must Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur, <em>je veux</em> consulter la liste des agences disponibles avec leurs informations, <em>afin de</em> choisir le point de prise en charge adapté à mon itinéraire.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné la page des agences, quand elle se charge, alors chaque agence affiche au minimum : nom, adresse complète, horaires d'ouverture, numéro de téléphone et statut (ouverte / fermée).</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné un filtre par ville appliqué, quand les résultats s'affichent, alors seules les agences correspondant à la ville sélectionnée sont visibles.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné Thomas (PSH moteur), quand il consulte la liste, alors les agences équipées (parking PMR, rampe d'accès, véhicules adaptés) sont signalées par un pictogramme accessible avec son texte alternatif.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F11 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F11</span>
+            <span class="us-title">Géolocalisation des agences sur carte</span>
+            <span class="badge badge-should">Should Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur en déplacement, <em>je veux</em> visualiser les agences sur une carte interactive, <em>afin de</em> repérer rapidement l'agence la plus proche de ma position ou de ma destination.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné la vue carte, quand elle s'affiche, alors chaque agence est représentée par un marqueur cliquable affichant en infobulle son nom, son adresse et ses horaires du jour.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné un utilisateur ayant autorisé la géolocalisation, quand la carte se charge, alors elle est centrée sur sa position GPS actuelle avec les agences à moins de 50 km visibles par défaut.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné un clic sur un marqueur d'agence, quand l'infobulle s'ouvre, alors elle propose un lien vers la fiche complète de l'agence et un bouton "Chercher depuis cette agence" pré-remplissant le formulaire de recherche.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F12 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F12</span>
+            <span class="us-title">Rechercher des offres (ACRISS)</span>
+            <span class="badge badge-must">Must Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur, <em>je veux</em> rechercher des offres de location en précisant la ville de départ, la ville de retour, les dates et la catégorie ACRISS, <em>afin de</em> trouver le véhicule adapté à mes besoins au meilleur prix.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné un formulaire de recherche valide soumis, quand les résultats s'affichent, alors le chargement prend moins de 2 secondes et les offres sont triées par pertinence (disponibilité + prix).</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné une date de retour antérieure à la date de départ, quand je tente de lancer la recherche, alors le système bloque la soumission et indique l'erreur de logique de date.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné une catégorie ACRISS sélectionnée, quand les résultats s'affichent, alors chaque offre présente clairement le code ACRISS, le modèle de référence, la transmission, la capacité de passagers et les équipements inclus.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F13 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F13</span>
+            <span class="us-title">Consulter le détail d'une offre</span>
+            <span class="badge badge-must">Must Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur, <em>je veux</em> consulter la fiche complète d'une offre de location, <em>afin de</em> prendre une décision éclairée avant de procéder à la réservation.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné la page de détail d'une offre, quand elle se charge, alors elle affiche : prix total TTC, inclusions, politique carburant, conditions de modification/annulation, photos du véhicule et avis clients associés.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné Mei Lin (cliente internationale avec devise CNY sélectionnée), quand elle consulte le détail, alors le prix est affiché en CNY avec un taux de change indicatif et la date de référence du taux.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné un utilisateur PSH visuel, quand il consulte les photos du véhicule, alors chaque image possède un texte alternatif descriptif (ex : "Toyota Corolla blanche, vue de face, 4 portes").</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F14 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F14</span>
+            <span class="us-title">Comparer des offres</span>
+            <span class="badge badge-could">Could Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur, <em>je veux</em> sélectionner jusqu'à 3 offres et les comparer côte à côte, <em>afin d'</em>identifier rapidement l'option la plus adaptée à mes critères sans naviguer entre plusieurs pages.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné 2 ou 3 offres sélectionnées, quand j'ouvre la vue comparative, alors un tableau côte à côte présente : prix, catégorie ACRISS, équipements, politique d'annulation et note moyenne.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné la vue comparative, quand une caractéristique diffère significativement entre les offres, alors cette différence est mise en évidence visuellement (icône ou couleur distinctive).</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné la vue comparative, quand je clique sur "Réserver" pour l'une des offres, alors je suis redirigé vers le formulaire de réservation pré-rempli avec les informations de cette offre.</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /group B -->
+
+      <!-- Groupe C -->
+      <div class="us-group">
+        <div class="us-group-title">C — Réservation &amp; Paiement</div>
+
+        <!-- F15 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F15</span>
+            <span class="us-title">Réserver une location</span>
+            <span class="badge badge-must">Must Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur authentifié, <em>je veux</em> réserver un véhicule en ligne, <em>afin de</em> garantir sa disponibilité aux dates et dans l'agence choisies.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné un formulaire de réservation correctement renseigné et un paiement Stripe validé, quand je confirme, alors un email de confirmation est envoyé en moins de 2 minutes et la réservation apparaît dans mon historique.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné un paiement Stripe refusé, quand je tente de confirmer la réservation, alors aucune réservation n'est créée, un message d'erreur explicite s'affiche et je suis invité à corriger les informations de paiement.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné un véhicule de la catégorie sélectionnée devenant indisponible lors de la saisie, quand je tente de confirmer, alors le système m'avertit immédiatement de l'indisponibilité et me propose des alternatives.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F16 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F16</span>
+            <span class="us-title">Options complémentaires</span>
+            <span class="badge badge-should">Should Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur, <em>je veux</em> ajouter des options complémentaires à ma réservation (assurance premium, GPS, siège enfant, véhicule PMR), <em>afin de</em> personnaliser ma location selon mes besoins spécifiques.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné Thomas (PSH moteur) sélectionnant "Véhicule adapté PMR", quand le filtre s'applique, alors seules les agences et catégories de véhicules disposant de cet équipement restent disponibles.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné une option sélectionnée ou désélectionnée, quand l'action est effectuée, alors le prix total est recalculé et mis à jour instantanément dans le récapitulatif avec le détail de chaque poste de coût.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné un utilisateur revenant sur le formulaire de réservation, quand la page se charge, alors les options précédemment sélectionnées au cours de la même session sont pré-cochées.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F17 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F17</span>
+            <span class="us-title">Paiement sécurisé via Stripe</span>
+            <span class="badge badge-must">Must Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur, <em>je veux</em> payer ma réservation via Stripe, <em>afin d'</em>effectuer un paiement sécurisé sans que mes données bancaires soient stockées sur la plateforme YCYW.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné l'interface de paiement Stripe Elements, quand je saisis mes informations bancaires, alors elles sont transmises directement à Stripe via HTTPS sans transiter par les serveurs YCYW (conformité PCI-DSS).</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné un paiement nécessitant une authentification 3D Secure, quand ma banque me redirige pour validation, alors après confirmation je reviens automatiquement sur la page de confirmation de réservation.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné un remboursement dû suite à une annulation, quand il est initié, alors le remboursement Stripe est déclenché sous 24 heures et l'utilisateur est notifié du montant et du délai de traitement estimé.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F18 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F18</span>
+            <span class="us-title">Modifier une réservation</span>
+            <span class="badge badge-must">Must Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur, <em>je veux</em> modifier ma réservation existante (dates, options, agence de retour), <em>afin de</em> l'adapter à un changement de planning dans le respect des conditions tarifaires.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné une réservation modifiable (plus de 48h avant la prise en charge), quand je soumets une modification, alors les nouvelles disponibilités sont vérifiées en temps réel et le différentiel de prix est affiché avant confirmation.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné une tentative de modification à moins de 48h du début, quand j'accède au détail de la réservation, alors le bouton de modification est désactivé et un message explique clairement la politique de modification.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné une modification confirmée engendrant un surcoût, quand je valide, alors le paiement complémentaire est traité via Stripe et un nouvel email de confirmation avec les informations mises à jour m'est envoyé.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F19 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F19</span>
+            <span class="us-title">Annuler une réservation</span>
+            <span class="badge badge-must">Must Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur, <em>je veux</em> annuler ma réservation, <em>afin de</em> libérer le véhicule et obtenir un remboursement selon les conditions en vigueur.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné une annulation effectuée plus d'une semaine avant la prise en charge, quand je confirme, alors un remboursement intégral est initié sous 24 heures et un email de confirmation d'annulation m'est envoyé.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné une annulation entre 48h et 7 jours avant la prise en charge, quand je confirme, alors uniquement 25 % du montant total est remboursé conformément à la politique tarifaire.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné que je clique sur "Annuler ma réservation", quand le formulaire de confirmation s'affiche, alors il récapitule le montant qui sera remboursé avant toute action définitive de ma part.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F20 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F20</span>
+            <span class="us-title">Historique des réservations</span>
+            <span class="badge badge-must">Must Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur, <em>je veux</em> consulter l'historique de toutes mes réservations (passées, en cours, à venir), <em>afin de</em> suivre mes locations et accéder aux documents associés.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné la page d'historique, quand elle se charge, alors les réservations sont classées par date décroissante et chacune affiche un statut visuel distinct (À venir / En cours / Terminée / Annulée).</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné un clic sur le détail d'une réservation, quand la fiche s'ouvre, alors elle affiche le contrat de location, le véhicule attribué, les options souscrites et une facture téléchargeable en PDF.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné un filtre par statut appliqué, quand les résultats se mettent à jour, alors seules les réservations correspondant au statut filtré sont affichées, sans rechargement complet de la page.</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /group C -->
+
+      <!-- Groupe D -->
+      <div class="us-group">
+        <div class="us-group-title">D — Service Client &amp; Communication</div>
+
+        <!-- F21 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F21</span>
+            <span class="us-title">Tchat avec le service client</span>
+            <span class="badge badge-should">Should Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur, <em>je veux</em> contacter le service client via un tchat intégré à l'application, <em>afin d'</em>obtenir une assistance rapide sans quitter la plateforme ni décrocher le téléphone.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné le tchat ouvert pendant les heures ouvrées (lun–ven 8h–20h, horaire local), quand j'envoie un message, alors un conseiller répond dans un délai maximal de 5 minutes et l'historique du tchat est consultable dans mon profil.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné le tchat ouvert en dehors des heures ouvrées, quand j'envoie un message, alors un chatbot qualifie la demande et peut créer automatiquement un ticket de support ; un conseiller prend le relais à la réouverture.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné Thomas (PSH auditif), quand il utilise le tchat, alors l'interface est entièrement navigable au clavier, les nouveaux messages sont signalés par une notification visuelle et le composant respecte les attributs ARIA de dialogue en direct.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F22 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F22</span>
+            <span class="us-title">Notifications (email &amp; push)</span>
+            <span class="badge badge-must">Must Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur, <em>je veux</em> recevoir des notifications relatives à mes réservations (confirmation, rappels, modifications, annulations), <em>afin d'</em>être informé proactivement des événements importants liés à mes locations.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné une réservation dont le paiement vient d'être validé, quand la confirmation est traitée, alors un email récapitulatif complet est envoyé dans les 2 minutes suivant la validation.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné une réservation prévue dans moins de 24 heures, quand le rappel est déclenché, alors une notification push (si activée) et/ou un email de rappel sont envoyés avec les détails de la prise en charge.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné un utilisateur ayant désactivé les notifications par email dans ses préférences, quand un événement se produit, alors les notifications sont exclusivement envoyées via les canaux actifs configurés par l'utilisateur.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F23 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F23</span>
+            <span class="us-title">Avis et évaluations</span>
+            <span class="badge badge-could">Could Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur ayant terminé une location, <em>je veux</em> laisser un avis et une note sur l'agence et le véhicule, <em>afin d'</em>aider les autres clients dans leurs choix et de contribuer à l'amélioration continue du service.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné une location dont le retour est confirmé, quand l'utilisateur reçoit l'invitation à évaluer, alors il peut noter l'agence, le véhicule et le service global de 1 à 5 étoiles et rédiger un commentaire libre de 500 caractères maximum.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné un avis soumis et en cours de modération, quand l'utilisateur consulte son profil, alors il voit l'état "En cours de validation" pour cet avis avec le délai indicatif de traitement (48h).</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné un avis validé, quand il apparaît sur la fiche agence, alors il affiche la note en étoiles, l'extrait du commentaire, la date de la location et le prénom masqué de l'auteur.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F24 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F24</span>
+            <span class="us-title">Programme de fidélité</span>
+            <span class="badge badge-could">Could Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur régulier, <em>je veux</em> accumuler des points de fidélité à chaque location complétée, <em>afin de</em> bénéficier de remises ou d'avantages lors de mes prochaines réservations.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné une location facturée et clôturée, quand les points sont calculés (1 point par euro dépensé), alors le solde du compte de fidélité est mis à jour sous 24h et l'utilisateur reçoit une notification du gain.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné un solde de points suffisant pour une réduction, quand l'utilisateur effectue une réservation, alors il peut appliquer ses points pour obtenir une réduction calculée et affichée en temps réel sur le récapitulatif.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné des points expirant dans 30 jours, quand la date approche, alors l'utilisateur reçoit un email de rappel l'invitant à les utiliser avant leur péremption.</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /group D -->
+
+      <!-- Groupe E -->
+      <div class="us-group">
+        <div class="us-group-title">E — Paramètres &amp; Personnalisation</div>
+
+        <!-- F25 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F25</span>
+            <span class="us-title">Sélection de la langue et de la devise</span>
+            <span class="badge badge-must">Must Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur international, <em>je veux</em> choisir ma langue d'affichage et ma devise préférée, <em>afin de</em> naviguer et comprendre les prix dans mon contexte culturel et linguistique.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné le sélecteur de langue, quand Mei Lin choisit "Chinois simplifié", alors l'intégralité de l'interface (menus, libellés, messages d'erreur) et les emails futurs basculent dans cette langue immédiatement.</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné un changement de devise (ex : EUR → CNY), quand la préférence est enregistrée, alors tous les prix de l'application sont recalculés et affichés dans la nouvelle devise selon le taux de change officiel du jour.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné un utilisateur américain ayant sélectionné la locale US, quand il consulte ses réservations, alors les dates s'affichent au format MM/DD/YYYY et les heures au format 12h AM/PM.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F26 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F26</span>
+            <span class="us-title">Paramètres d'accessibilité</span>
+            <span class="badge badge-should">Should Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>utilisateur en situation de handicap, <em>je veux</em> accéder à des paramètres d'accessibilité (taille de texte, mode contraste élevé, réduction de mouvement), <em>afin d'</em>adapter l'interface à mes besoins sans dépendre uniquement des paramètres de mon système d'exploitation.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné le mode "Contraste élevé" activé, quand l'interface se réaffiche, alors les ratios de contraste de tous les textes et éléments interactifs atteignent au minimum 7:1 (niveau AAA).</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné la taille de texte augmentée à 150 %, quand l'interface se recalcule, alors aucun élément ne se chevauche et la mise en page reste fonctionnelle sans défilement horizontal.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné un utilisateur ayant configuré ses préférences d'accessibilité, quand il se reconnecte depuis n'importe quel appareil, alors ses paramètres sont restaurés automatiquement depuis son profil serveur.</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /group E -->
+
+      <!-- Groupe F -->
+      <div class="us-group">
+        <div class="us-group-title">F — API &amp; Intégration Agence</div>
+
+        <!-- F27 -->
+        <div class="us-card">
+          <div class="us-card-head">
+            <span class="us-fid">F27</span>
+            <span class="us-title">API CRUD agence</span>
+            <span class="badge badge-must">Must Have</span>
+          </div>
+          <div class="us-body">
+            <div class="us-story"><em>En tant qu'</em>application d'agence partenaire, <em>je veux</em> interagir avec l'API RESTful de la plateforme YCYW, <em>afin de</em> gérer les utilisateurs, les disponibilités et les réservations de manière synchronisée en temps réel.</div>
+            <div class="ca-label">Critères d'acceptation</div>
+            <div class="ca-list">
+              <div class="ca-item"><span>CA1 —</span> Étant donné une requête API authentifiée avec un token JWT d'agence valide, quand un endpoint CRUD est appelé, alors la réponse est retournée en moins de 500 ms au format JSON documenté (OpenAPI 3.0).</div>
+              <div class="ca-item"><span>CA2 —</span> Étant donné une requête sans authentification ou avec un token expiré, quand elle atteint un endpoint protégé, alors le système retourne un code HTTP 401 avec un corps d'erreur structuré indiquant le motif du rejet.</div>
+              <div class="ca-item"><span>CA3 —</span> Étant donné une mise à jour de réservation effectuée via l'API agence, quand elle est confirmée, alors le client concerné reçoit automatiquement une notification de la modification par email et, si activée, par notification push.</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /group F -->
+
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- 5. EXIGENCES NON FONCTIONNELLES                   -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <section class="section" id="nfr">
+      <div class="section-header">
+        <span class="section-number">Section 05</span>
+        <h2 class="section-title">Exigences Non Fonctionnelles</h2>
+      </div>
+      <p class="prose" style="margin-bottom:28px;">Ces exigences définissent les critères de qualité de la plateforme, indépendamment des fonctionnalités. Elles sont contractuelles et mesurables.</p>
+
+      <div class="nfr-grid">
+
+        <div class="nfr-card">
+          <div class="nfr-icon">⚡</div>
+          <div class="nfr-title">Performance</div>
+          <div class="nfr-rows">
+            <div class="nfr-row"><span class="nfr-row-key">Chargement page (P90)</span><span class="nfr-row-val">&lt; 2 s</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Résultats de recherche</span><span class="nfr-row-val">&lt; 2 s</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Réponse API (P99)</span><span class="nfr-row-val">&lt; 500 ms</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Score Lighthouse (perf.)</span><span class="nfr-row-val">≥ 85</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Core Web Vitals LCP</span><span class="nfr-row-val">&lt; 2,5 s</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Core Web Vitals CLS</span><span class="nfr-row-val">&lt; 0,1</span></div>
+          </div>
+        </div>
+
+        <div class="nfr-card">
+          <div class="nfr-icon">🛡️</div>
+          <div class="nfr-title">Disponibilité &amp; Fiabilité</div>
+          <div class="nfr-rows">
+            <div class="nfr-row"><span class="nfr-row-key">SLA cible</span><span class="nfr-row-val">99,9 %</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Temps d'arrêt max/mois</span><span class="nfr-row-val">43 min</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">RTO (Recovery Time)</span><span class="nfr-row-val">&lt; 1 h</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">RPO (Recovery Point)</span><span class="nfr-row-val">&lt; 1 h</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Maintenance planifiée</span><span class="nfr-row-val">Hors pic</span></div>
+          </div>
+        </div>
+
+        <div class="nfr-card">
+          <div class="nfr-icon">🔒</div>
+          <div class="nfr-title">Sécurité</div>
+          <div class="nfr-rows">
+            <div class="nfr-row"><span class="nfr-row-key">Chiffrement transit</span><span class="nfr-row-val">TLS 1.3</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Chiffrement données</span><span class="nfr-row-val">AES-256</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Hachage mots de passe</span><span class="nfr-row-val">Argon2id</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Audit de sécurité</span><span class="nfr-row-val">Annuel</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Pentest externe</span><span class="nfr-row-val">Bi-annuel</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Conformité paiement</span><span class="nfr-row-val">PCI-DSS</span></div>
+          </div>
+        </div>
+
+        <div class="nfr-card">
+          <div class="nfr-icon">♿</div>
+          <div class="nfr-title">Accessibilité</div>
+          <div class="nfr-rows">
+            <div class="nfr-row"><span class="nfr-row-key">Référentiel</span><span class="nfr-row-val">WCAG 2.1 AA</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Score Lighthouse (a11y)</span><span class="nfr-row-val">≥ 90</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Contraste texte normal</span><span class="nfr-row-val">≥ 4,5:1</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Contraste grand texte</span><span class="nfr-row-val">≥ 3:1</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Zone de clic min.</span><span class="nfr-row-val">44×44 px</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Audit indépendant</span><span class="nfr-row-val">Annuel</span></div>
+          </div>
+        </div>
+
+        <div class="nfr-card">
+          <div class="nfr-icon">📊</div>
+          <div class="nfr-title">Scalabilité</div>
+          <div class="nfr-rows">
+            <div class="nfr-row"><span class="nfr-row-key">Utilisateurs simultanés</span><span class="nfr-row-val">5 000</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Pics (été/fêtes)</span><span class="nfr-row-val">× 3</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Auto-scaling</span><span class="nfr-row-val">Horizontal</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Architecture</span><span class="nfr-row-val">Cloud-native</span></div>
+          </div>
+        </div>
+
+        <div class="nfr-card">
+          <div class="nfr-icon">🌍</div>
+          <div class="nfr-title">Internationalisation</div>
+          <div class="nfr-rows">
+            <div class="nfr-row"><span class="nfr-row-key">Langues au lancement</span><span class="nfr-row-val">6</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Devises supportées</span><span class="nfr-row-val">5</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Marchés cibles</span><span class="nfr-row-val">7 pays</span></div>
+            <div class="nfr-row"><span class="nfr-row-key">Taux de change</span><span class="nfr-row-val">Quotidien</span></div>
+          </div>
+        </div>
+
+      </div><!-- /nfr-grid -->
+
+      <!-- Compliance note -->
+      <div class="info-block" style="margin-top:28px; border-left-color: var(--warm);">
+        <div class="info-block-title">Conformité réglementaire</div>
+        <ul>
+          <li><strong>RGPD (EU 2016/679) :</strong> Registre des traitements tenu à jour, DPD désigné, analyse d'impact (DPIA) réalisée pour les traitements sensibles, sous-traitants contractualisés (DPA).</li>
+          <li><strong>ePrivacy / Cookies :</strong> Consentement explicite avant tout dépôt de cookie non strictement nécessaire. Mécanisme de retrait du consentement aussi simple que son octroi.</li>
+          <li><strong>PCI-DSS :</strong> Aucune donnée de carte bancaire stockée côté YCYW. Intégration Stripe Elements conforme niveau SAQ A.</li>
+          <li><strong>Loi pour la Confiance en l'Économie Numérique (LCEN) :</strong> Mentions légales complètes, CGV accessibles avant tout achat, droit de rétractation applicable le cas échéant.</li>
+          <li><strong>Accessibilité (RGAA 4.1) :</strong> En complément de WCAG 2.1 AA, conformité RGAA pour les services publics français si contractualisé avec des entités publiques.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main><!-- /main-content -->
+</div><!-- /layout -->
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-copy">© 2026 Your Car Your Way — Document confidentiel, usage interne uniquement.</span>
+    <span class="footer-copy">Cahier des Charges v2.0 · Architecture Logicielle</span>
+  </div>
+</footer>
+
+<script>
+// Sticky nav active state
+(function() {
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('.nav-list a');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id);
+        });
+      }
+    });
+  }, { threshold: 0.25 });
+  sections.forEach(s => obs.observe(s));
+})();
+</script>
+
+</body>
+</html>

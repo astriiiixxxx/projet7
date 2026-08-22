@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Car Your Way — Proposition d'Architecture</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=Lora:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* ── Tokens ─────────────────────────────────────────── */
+:root {
+  --bg:         #F1F4FA;
+  --surface:    #FFFFFF;
+  --surface-2:  #E8EDF6;
+  --border:     #D2D9E8;
+  --text-1:     #08152A;
+  --text-2:     #3A4F6A;
+  --text-3:     #7788A2;
+  --accent:     #1A4FDB;
+  --accent-dim: #EBF0FD;
+  --warm:       #C27C0A;
+  --warm-dim:   #FEF3DC;
+  --green:      #065F46; --green-bg: #D1FAE5;
+  --red:        #C81E1E; --red-bg:   #FEE2E2;
+  --nav-w:      230px;
+  --radius:     8px;
+  /* code block */
+  --code-bg:    #0F1825;
+  --code-text:  #C8D8F0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:         #0A1020;
+    --surface:    #111825;
+    --surface-2:  #182030;
+    --border:     #1E2C42;
+    --text-1:     #D8E4F5;
+    --text-2:     #8898B5;
+    --text-3:     #4C607C;
+    --accent:     #5B82F5;
+    --accent-dim: #182050;
+    --warm:       #F59E0B;
+    --warm-dim:   #2A2008;
+    --green:      #6EE7B7; --green-bg: #022C22;
+    --red:        #F87171; --red-bg:   #450A0A;
+    --code-bg:    #080E1A;
+    --code-text:  #B8CCE8;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:         #0A1020; --surface:    #111825;
+  --surface-2:  #182030; --border:     #1E2C42;
+  --text-1:     #D8E4F5; --text-2:     #8898B5; --text-3: #4C607C;
+  --accent:     #5B82F5; --accent-dim: #182050;
+  --warm:       #F59E0B; --warm-dim:   #2A2008;
+  --green:      #6EE7B7; --green-bg:   #022C22;
+  --red:        #F87171; --red-bg:     #450A0A;
+  --code-bg:    #080E1A; --code-text:  #B8CCE8;
+}
+/* ── Reset ──────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text-1);font-family:'Lora',Georgia,serif;line-height:1.72}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* ── Header ─────────────────────────────────────────── */
+.site-header{background:var(--surface);border-bottom:1px solid var(--border)}
+.header-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:20px;height:60px}
+.logo-mark{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-icon{width:34px;height:34px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center}
+.logo-icon svg{fill:#fff}
+.logo-name{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;letter-spacing:.02em;color:var(--text-1)}
+.logo-name span{color:var(--accent)}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.header-doc{font-family:'Barlow',sans-serif;font-size:12.5px;font-weight:500;color:var(--text-3)}
+.header-badge{background:var(--accent-dim);color:var(--accent);font-family:'Barlow',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.08em;padding:3px 8px;border-radius:4px;text-transform:uppercase;white-space:nowrap}
+
+/* ── Layout ─────────────────────────────────────────── */
+.layout{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;gap:44px}
+.sidebar{width:var(--nav-w);flex-shrink:0;padding-top:32px}
+.sidebar-inner{position:sticky;top:24px}
+.sidebar-label{font-family:'Barlow',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);margin-bottom:10px}
+.nav-list{list-style:none}
+.nav-list li+li{margin-top:1px}
+.nav-list a{display:block;padding:5px 11px;border-radius:6px;font-family:'Barlow',sans-serif;font-size:13px;font-weight:500;color:var(--text-2);text-decoration:none;transition:background .15s,color .15s;border-left:2px solid transparent}
+.nav-list a:hover,.nav-list a.active{background:var(--accent-dim);color:var(--accent);border-left-color:var(--accent)}
+.nav-divider{height:1px;background:var(--border);margin:10px 0}
+.nav-meta{font-family:'Barlow',sans-serif;font-size:11px;color:var(--text-3);line-height:1.65;margin-top:20px}
+.main-content{flex:1;min-width:0;padding-top:44px;padding-bottom:80px}
+
+/* ── Doc header ─────────────────────────────────────── */
+.doc-header{border-bottom:1px solid var(--border);padding-bottom:32px;margin-bottom:52px}
+.doc-eyebrow{font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.doc-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(30px,4.5vw,48px);font-weight:700;line-height:1.1;color:var(--text-1);text-wrap:balance;margin-bottom:14px}
+.doc-subtitle{font-size:16px;color:var(--text-2);max-width:660px;line-height:1.65;margin-bottom:26px}
+.doc-meta-row{display:flex;flex-wrap:wrap;gap:24px}
+.doc-meta-item{display:flex;flex-direction:column;gap:2px}
+.doc-meta-label{font-family:'Barlow',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3)}
+.doc-meta-val{font-family:'Barlow',sans-serif;font-size:13.5px;font-weight:600;color:var(--text-1)}
+
+/* ── Section ────────────────────────────────────────── */
+.section{margin-bottom:68px}
+.section-header{display:flex;align-items:baseline;gap:14px;margin-bottom:28px;border-bottom:2px solid var(--accent);padding-bottom:10px}
+.section-num{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);flex-shrink:0}
+.section-title{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;color:var(--text-1);text-wrap:balance}
+
+/* ── Prose ──────────────────────────────────────────── */
+.prose p{margin-bottom:.9em;font-size:15px;color:var(--text-2)}
+.prose p:last-child{margin-bottom:0}
+.prose strong{font-weight:700;color:var(--text-1)}
+
+/* ── Principle cards ────────────────────────────────── */
+.principle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.p-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;border-top:3px solid var(--accent);display:flex;flex-direction:column;gap:10px}
+.p-card-head{display:flex;align-items:flex-start;gap:12px}
+.p-icon{font-size:22px;line-height:1;flex-shrink:0;margin-top:1px}
+.p-title{font-family:'Barlow',sans-serif;font-weight:700;font-size:14px;color:var(--text-1);text-transform:uppercase;letter-spacing:.05em;line-height:1.3}
+.p-tag{display:inline-block;font-family:'Barlow',sans-serif;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--accent-dim);color:var(--accent);padding:2px 7px;border-radius:3px;margin-top:4px}
+.p-body{font-size:13.5px;color:var(--text-2);line-height:1.6}
+.p-body strong{color:var(--text-1);font-weight:600}
+.p-audit{margin-top:6px;padding:8px 12px;background:var(--surface-2);border-radius:6px;font-family:'Barlow',sans-serif;font-size:12px;color:var(--text-3);line-height:1.5}
+.p-audit strong{color:var(--text-2);font-weight:600}
+
+/* ── Tech choice table ──────────────────────────────── */
+.tech-table-wrap{overflow-x:auto}
+.tech-table{width:100%;border-collapse:collapse;min-width:640px}
+.tech-table th{font-family:'Barlow',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);background:var(--surface-2);padding:8px 14px;text-align:left;border-bottom:1px solid var(--border)}
+.tech-table td{padding:11px 14px;border-bottom:1px solid var(--border);font-size:14px;vertical-align:top}
+.tech-table tr:last-child td{border-bottom:none}
+.tech-table tr{background:var(--surface)}
+.tech-table tr:hover{background:var(--surface-2);transition:background .1s}
+.tech-category{font-family:'Barlow',sans-serif;font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);display:block;margin-bottom:3px}
+.tech-choice{font-family:'Barlow',sans-serif;font-weight:700;font-size:15px;color:var(--text-1)}
+.tech-version{font-size:12px;color:var(--text-3);font-family:'Barlow',sans-serif}
+.badge-tech{display:inline-block;font-family:'Barlow',sans-serif;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:3px;white-space:nowrap}
+.badge-retenu{background:var(--green-bg);color:var(--green)}
+.badge-ecarte{background:var(--red-bg);color:var(--red)}
+.tech-alt{font-size:13px;color:var(--text-3);font-family:'Barlow',sans-serif;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tech-justif{font-size:13.5px;color:var(--text-2);line-height:1.55}
+
+/* ── Code blocks ────────────────────────────────────── */
+.code-wrap{background:var(--code-bg);border-radius:var(--radius);overflow:hidden;margin:20px 0}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.code-lang{font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(200,216,240,.5)}
+.code-label{font-family:'Barlow',sans-serif;font-size:11px;color:rgba(200,216,240,.4)}
+.code-body{padding:16px 20px;overflow-x:auto}
+.code-body pre{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;color:var(--code-text);white-space:pre;tab-size:2}
+/* syntax tints */
+.kw{color:#79B8FF}
+.cm{color:#5A7A9A;font-style:italic}
+.str{color:#9ECBFF}
+.fn{color:#B392F0}
+.at{color:#FFAB70}
+.tp{color:#85E89D}
+.nm{color:#FFA657}
+
+/* ── Architecture description ───────────────────────── */
+.arch-desc{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--radius);padding:16px 20px;margin-top:20px}
+.arch-desc-title{font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-1);margin-bottom:8px}
+.arch-desc p{font-size:14px;color:var(--text-2);line-height:1.62;margin-bottom:.7em}
+.arch-desc p:last-child{margin-bottom:0}
+.arch-desc strong{color:var(--text-1);font-weight:700}
+
+/* ── Security blocks ─────────────────────────────────── */
+.sec-grid{display:flex;flex-direction:column;gap:14px}
+.sec-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px}
+.sec-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.sec-letter{width:28px;height:28px;border-radius:6px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
+.sec-title{font-family:'Barlow',sans-serif;font-weight:700;font-size:14px;color:var(--text-1);text-transform:uppercase;letter-spacing:.05em}
+.sec-body{font-size:14px;color:var(--text-2);line-height:1.65}
+.sec-body strong{color:var(--text-1);font-weight:700}
+.sec-detail{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.sec-chip{display:inline-flex;align-items:center;gap:5px;font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;padding:4px 10px;border-radius:5px;background:var(--accent-dim);color:var(--accent)}
+.sec-chip.good{background:var(--green-bg);color:var(--green)}
+.sec-chip.warn{background:var(--warm-dim);color:var(--warm)}
+
+/* ── Migration phases ───────────────────────────────── */
+.phase-grid{display:flex;flex-direction:column;gap:20px}
+.phase-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.phase-card-head{display:flex;align-items:center;gap:16px;padding:16px 20px;border-bottom:1px solid var(--border)}
+.phase-num{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:#fff;flex-shrink:0}
+.p1-color{background:#DC2626}
+.p2-color{background:#C27C0A}
+.p3-color{background:#065F46}
+.phase-head-info{flex:1}
+.phase-title{font-family:'Barlow',sans-serif;font-weight:700;font-size:16px;color:var(--text-1)}
+.phase-subtitle{font-family:'Barlow',sans-serif;font-size:12px;color:var(--text-3);margin-top:2px}
+.phase-duration{font-family:'Barlow',sans-serif;font-size:12px;font-weight:700;padding:4px 10px;border-radius:4px;white-space:nowrap}
+.d-red{background:var(--red-bg);color:var(--red)}
+.d-amber{background:var(--warm-dim);color:var(--warm)}
+.d-green{background:var(--green-bg);color:var(--green)}
+.phase-body{padding:16px 20px}
+.phase-body ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.phase-body ul li{font-size:14px;color:var(--text-2);line-height:1.55;padding-left:18px;position:relative}
+.phase-body ul li::before{content:'→';position:absolute;left:0;top:0;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;color:var(--accent)}
+.phase-body p{font-size:14px;color:var(--text-2);margin-bottom:.8em;line-height:1.6}
+.phase-body strong{color:var(--text-1);font-weight:700}
+
+/* ── Sub-title ──────────────────────────────────────── */
+.sub-title{font-family:'Barlow',sans-serif;font-size:13.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-1);margin:32px 0 14px;padding-bottom:6px;border-bottom:1px dashed var(--border)}
+
+/* ── Footer ─────────────────────────────────────────── */
+.site-footer{background:var(--surface);border-top:1px solid var(--border);padding:22px 0;margin-top:40px}
+.footer-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.footer-copy{font-family:'Barlow',sans-serif;font-size:11.5px;color:var(--text-3)}
+
+/* ── Responsive ─────────────────────────────────────── */
+@media(max-width:800px){
+  .sidebar{display:none}
+  .layout{padding:0 16px}
+  .main-content{padding-top:28px}
+  .principle-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ── Header ───────────────────────────────────────── -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo-mark" href="#">
+      <div class="logo-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-5h14v5z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg>
+      </div>
+      <span class="logo-name">Your Car <span>Your Way</span></span>
+    </a>
+    <div class="header-right">
+      <span class="header-doc">Proposition d'Architecture — Plateforme Unifiée</span>
+      <span class="header-badge">V1.0 · 2026</span>
+    </div>
+  </div>
+</header>
+
+<!-- ── Body ─────────────────────────────────────────── -->
+<div class="layout">
+
+  <nav class="sidebar" aria-label="Navigation du document">
+    <div class="sidebar-inner">
+      <div class="sidebar-label">Sommaire</div>
+      <ul class="nav-list">
+        <li><a href="#principes">1. Principes directeurs</a></li>
+        <li><a href="#technos">2. Choix technologiques</a></li>
+        <li><a href="#architecture">3. Diagramme C4</a></li>
+        <li><a href="#modele">4. Modèle de données</a></li>
+        <li><a href="#securite">5. Sécurité &amp; conformité</a></li>
+        <li><a href="#migration">6. Plan de migration</a></li>
+      </ul>
+      <div class="nav-divider"></div>
+      <div class="nav-meta">
+        <strong>Version</strong> 1.0<br>
+        <strong>Date</strong> Août 2026<br>
+        <strong>Périmètre</strong> 7 marchés<br>
+        <strong>Réf. CDC</strong> v2.0 (27 US)<br>
+        <strong>Réf. Audit</strong> v1.0
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content">
+
+    <!-- Doc header -->
+    <div class="doc-header">
+      <div class="doc-eyebrow">Architecture Logicielle · Nouvelle Plateforme Centralisée</div>
+      <h1 class="doc-title">Proposition d'Architecture<br>Your Car Your Way</h1>
+      <p class="doc-subtitle">Ce document présente les choix architecturaux retenus pour la nouvelle plateforme web centralisée, en réponse aux déficiences systémiques identifiées dans l'audit technique et aux exigences du cahier des charges v2.0. L'architecture proposée est une refonte ex nihilo, capitalisant sur les bonnes pratiques de l'application US (containerisation, bcrypt, monitoring).</p>
+      <div class="doc-meta-row">
+        <div class="doc-meta-item"><span class="doc-meta-label">Architecture</span><span class="doc-meta-val">SPA + API REST + Microservices</span></div>
+        <div class="doc-meta-item"><span class="doc-meta-label">Hébergement</span><span class="doc-meta-val">AWS (EKS + RDS + ElastiCache)</span></div>
+        <div class="doc-meta-item"><span class="doc-meta-label">SLA cible</span><span class="doc-meta-val">99,9 %</span></div>
+        <div class="doc-meta-item"><span class="doc-meta-label">Conformité</span><span class="doc-meta-val">RGPD · WCAG 2.1 AA · PCI-DSS</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- 1. PRINCIPES DIRECTEURS                        -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="section" id="principes">
+      <div class="section-header">
+        <span class="section-num">Section 01</span>
+        <h2 class="section-title">Principes Directeurs de l'Architecture</h2>
+      </div>
+      <div class="prose" style="margin-bottom:22px;">
+        <p>Six principes fondamentaux guident l'ensemble des décisions d'architecture. Ils ne sont pas des aspirations — chacun répond à un problème structurel identifié et documenté dans l'audit technique.</p>
+      </div>
+      <div class="principle-grid">
+
+        <div class="p-card">
+          <div class="p-card-head">
+            <span class="p-icon">🔌</span>
+            <div>
+              <div class="p-title">API-First</div>
+              <span class="p-tag">Interopérabilité</span>
+            </div>
+          </div>
+          <div class="p-body">Chaque fonctionnalité est d'abord exposée comme un endpoint API documenté (OpenAPI 3.0), avant d'être consommée par le frontend. Le contrat d'API devient la source de vérité partagée entre toutes les parties du système — frontend, applications agence, partenaires tiers.</div>
+          <div class="p-audit"><strong>Problème résolu :</strong> L'audit identifie l'absence totale d'API unifiée entre les 4 groupes d'applications. Les APIs existantes sont "limitées, hétérogènes et non unifiées entre pays".</div>
+        </div>
+
+        <div class="p-card">
+          <div class="p-card-head">
+            <span class="p-icon">☁️</span>
+            <div>
+              <div class="p-title">Cloud-Native &amp; Infrastructure as Code</div>
+              <span class="p-tag">Résilience</span>
+            </div>
+          </div>
+          <div class="p-body">L'infrastructure est définie en code (Terraform), versionnée et reproductible. Les déploiements sont automatisés, la redondance est native (multi-AZ), et le scaling horizontal est déclenché automatiquement par les métriques de charge.</div>
+          <div class="p-audit"><strong>Problème résolu :</strong> Le groupe FR/DE/ES/IT opère sur OVH avec déploiements manuels, zéro redondance, et 21-28 min d'indisponibilité mensuelle. Taux de déploiements réussis : 82 %.</div>
+        </div>
+
+        <div class="p-card">
+          <div class="p-card-head">
+            <span class="p-icon">🔒</span>
+            <div>
+              <div class="p-title">Security by Design</div>
+              <span class="p-tag">Conformité</span>
+            </div>
+          </div>
+          <div class="p-body">La sécurité est intégrée à chaque couche de l'architecture, pas ajoutée après coup. Chaque service applique le principe du moindre privilège. Les secrets sont gérés par un vault centralisé. La surface d'attaque est minimisée par conception.</div>
+          <div class="p-audit"><strong>Problème résolu :</strong> SHA-1 sur FR/DE/ES/IT, TLS 1.0 actif sur FR et IT, secrets en fichiers de config, 41 % de vulnérabilités packages — risques critiques documentés dans l'audit.</div>
+        </div>
+
+        <div class="p-card">
+          <div class="p-card-head">
+            <span class="p-icon">♿</span>
+            <div>
+              <div class="p-title">Accessibilité Universelle</div>
+              <span class="p-tag">WCAG 2.1 AA</span>
+            </div>
+          </div>
+          <div class="p-body">L'accessibilité n'est pas un module optionnel — elle est un critère de qualité de sortie au même titre que les tests fonctionnels. Chaque composant frontend est conçu et testé (axe-core en CI) pour être conforme WCAG 2.1 niveau AA, couvrant les personas PSH du cahier des charges.</div>
+          <div class="p-audit"><strong>Problème résolu :</strong> Aucune des applications existantes ne documente de conformité WCAG. Le cahier des charges v2.0 l'exige contractuellement pour tous les marchés (WCAG 2.1 AA, Lighthouse ≥ 90).</div>
+        </div>
+
+        <div class="p-card">
+          <div class="p-card-head">
+            <span class="p-icon">⚖️</span>
+            <div>
+              <div class="p-title">Stateless côté Applicatif</div>
+              <span class="p-tag">Scalabilité</span>
+            </div>
+          </div>
+          <div class="p-body">Les services applicatifs ne conservent aucun état de session en mémoire locale. L'état est externalisé dans Redis. Cette propriété permet de multiplier les instances d'un service sans affecter la cohérence, et de les décommissionner sans perte de données utilisateur.</div>
+          <div class="p-audit"><strong>Problème résolu :</strong> Tous les monolithes existants ont une scalabilité uniquement verticale. La capacité maximale va de 150 req/s (FR) à 350 req/s (US) — insuffisante pour le trafic agrégé de 7 marchés.</div>
+        </div>
+
+        <div class="p-card">
+          <div class="p-card-head">
+            <span class="p-icon">🧩</span>
+            <div>
+              <div class="p-title">Séparation Frontend / Backend</div>
+              <span class="p-tag">Maintenabilité</span>
+            </div>
+          </div>
+          <div class="p-body">Le frontend (SPA React) et le backend (API REST) sont des artefacts de déploiement distincts, versionnés indépendamment. Cette séparation permet de faire évoluer l'expérience utilisateur et la logique métier à des rythmes différents, et de tester chaque couche de manière isolée.</div>
+          <div class="p-audit"><strong>Problème résolu :</strong> Les applications FR/DE/ES/IT utilisent JSP/JSF, qui couple étroitement rendu HTML et logique serveur. Le délai de stabilisation post-release atteint 3,4 jours — le plus élevé du portefeuille.</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- 2. CHOIX TECHNOLOGIQUES                        -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="section" id="technos">
+      <div class="section-header">
+        <span class="section-num">Section 02</span>
+        <h2 class="section-title">Choix Technologiques Justifiés</h2>
+      </div>
+      <div class="prose" style="margin-bottom:20px;">
+        <p>Chaque choix technologique est motivé par les contraintes du cahier des charges, les enseignements de l'audit, et le critère de recrutabilité — la viabilité d'un choix technique dépend aussi de la disponibilité de compétences sur le marché.</p>
+      </div>
+      <div class="tech-table-wrap">
+        <table class="tech-table">
+          <thead>
+            <tr>
+              <th style="min-width:140px">Composant</th>
+              <th style="min-width:160px">Choix retenu</th>
+              <th style="min-width:130px">Alternative écartée</th>
+              <th>Justification</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr>
+              <td><span class="tech-category">Frontend</span><span class="tech-choice">React 18</span><span class="tech-version"> + TypeScript + Vite</span></td>
+              <td><span class="badge-tech badge-retenu">Retenu</span></td>
+              <td><div class="tech-alt"><span class="badge-tech badge-ecarte">Écarté</span> Vue 3, Angular</div></td>
+              <td class="tech-justif">React est l'écosystème JS le plus mature pour les SPAs accessibles (librairies a11y, react-aria). Cohérent avec l'application Canada (déjà React) — base de compétences réutilisable. TypeScript + Vite garantit un DX rapide et une maintenabilité forte. Angular présente une courbe d'apprentissage trop élevée et reste associé dans l'audit à l'application US, jamais généralisée.</td>
+            </tr>
+
+            <tr>
+              <td><span class="tech-category">Backend — Services</span><span class="tech-choice">Node.js + NestJS</span><span class="tech-version"> + TypeScript</span></td>
+              <td><span class="badge-tech badge-retenu">Retenu</span></td>
+              <td><div class="tech-alt"><span class="badge-tech badge-ecarte">Écarté</span> Spring Boot (Java)</div></td>
+              <td class="tech-justif">NestJS impose une architecture modulaire (modules, contrôleurs, services, guards) qui prévient la dérive vers un monolithe. Le partage du typage TypeScript avec le frontend réduit les erreurs d'intégration. Spring Boot, bien que robuste, est associé à Java EE — stack dont l'audit identifie la dépréciation et le déficit de recrutabilité sur le portefeuille existant.</td>
+            </tr>
+
+            <tr>
+              <td><span class="tech-category">Base de données principale</span><span class="tech-choice">PostgreSQL 16</span><span class="tech-version"> (AWS RDS Multi-AZ)</span></td>
+              <td><span class="badge-tech badge-retenu">Retenu</span></td>
+              <td><div class="tech-alt"><span class="badge-tech badge-ecarte">Écarté</span> MySQL, MongoDB</div></td>
+              <td class="tech-justif">PostgreSQL offre les transactions ACID nécessaires à la cohérence des réservations, le support natif de JSONB pour les données flexibles (options, horaires), et les extensions géospatiales (PostGIS) pour la recherche d'agences par position. RDS Multi-AZ répond directement à l'absence de redondance de base identifiée sur l'ensemble du portefeuille.</td>
+            </tr>
+
+            <tr>
+              <td><span class="tech-category">Cache &amp; Sessions</span><span class="tech-choice">Redis 7</span><span class="tech-version"> (AWS ElastiCache)</span></td>
+              <td><span class="badge-tech badge-retenu">Retenu</span></td>
+              <td><div class="tech-alt"><span class="badge-tech badge-ecarte">Écarté</span> Memcached</div></td>
+              <td class="tech-justif">Redis remplit trois rôles : stockage des refresh tokens (TTL natif), cache des résultats de recherche fréquents (réduction de charge DB), et Pub/Sub pour le tchat temps réel entre instances de service. Memcached, plus simple, ne supporte pas le Pub/Sub ni les structures de données riches nécessaires au tchat.</td>
+            </tr>
+
+            <tr>
+              <td><span class="tech-category">Temps réel — Tchat</span><span class="tech-choice">Socket.io</span><span class="tech-version"> + Redis Pub/Sub</span></td>
+              <td><span class="badge-tech badge-retenu">Retenu</span></td>
+              <td><div class="tech-alt"><span class="badge-tech badge-ecarte">Écarté</span> RabbitMQ dédié, Firebase</div></td>
+              <td class="tech-justif">Socket.io assure la compatibilité WebSocket avec fallback long-polling pour les environnements restrictifs. Le Pub/Sub Redis synchronise les messages entre instances du service tchat, garantissant la livraison même avec plusieurs pods actifs. RabbitMQ ajouterait une dépendance d'infrastructure distincte non justifiée pour le seul cas d'usage du tchat.</td>
+            </tr>
+
+            <tr>
+              <td><span class="tech-category">Authentification</span><span class="tech-choice">JWT (RS256)</span><span class="tech-version"> + Refresh Token httpOnly</span></td>
+              <td><span class="badge-tech badge-retenu">Retenu</span></td>
+              <td><div class="tech-alt"><span class="badge-tech badge-ecarte">Écarté</span> Sessions serveur</div></td>
+              <td class="tech-justif">JWT signé en RS256 (asymétrique) permet à chaque service de vérifier un token sans appel central — cohérent avec le principe Stateless. L'access token expire en 15 minutes ; le refresh token (7 jours, rotation à chaque usage) est stocké en cookie httpOnly pour bloquer les attaques XSS. Les sessions serveur centralisées seraient un point de couplage fort incompatible avec l'architecture distribuée.</td>
+            </tr>
+
+            <tr>
+              <td><span class="tech-category">Paiement</span><span class="tech-choice">Stripe</span><span class="tech-version"> (Stripe Elements + Payment Intents)</span></td>
+              <td><span class="badge-tech badge-retenu">Retenu</span></td>
+              <td><div class="tech-alt">— imposé par le CDC</div></td>
+              <td class="tech-justif">Stripe Elements garantit que les données de carte ne transitent jamais par les serveurs YCYW (conformité PCI-DSS SAQ A). L'API Payment Intents supporte nativement 3D Secure 2, les remboursements partiels et les webhooks de réconciliation. La conformité RGPD est facilitée par la tokenisation des moyens de paiement côté Stripe.</td>
+            </tr>
+
+            <tr>
+              <td><span class="tech-category">Hébergement / Cloud</span><span class="tech-choice">AWS</span><span class="tech-version"> (eu-west-1 + us-east-1)</span></td>
+              <td><span class="badge-tech badge-retenu">Retenu</span></td>
+              <td><div class="tech-alt"><span class="badge-tech badge-ecarte">Écarté</span> Azure, GCP</div></td>
+              <td class="tech-justif">AWS est déjà l'hébergeur des applications UK et Canada — l'équipe opérationnelle possède des compétences existantes réutilisables. EKS pour l'orchestration Kubernetes, RDS Multi-AZ pour la base de données, ElastiCache pour Redis, et CloudFront pour le CDN sont des services matures avec des SLA contractuels. Deux régions (EU et US) couvrent la latence des sept marchés cibles.</td>
+            </tr>
+
+            <tr>
+              <td><span class="tech-category">CI/CD</span><span class="tech-choice">GitHub Actions</span><span class="tech-version"> + ArgoCD</span></td>
+              <td><span class="badge-tech badge-retenu">Retenu</span></td>
+              <td><div class="tech-alt"><span class="badge-tech badge-ecarte">Écarté</span> Jenkins, GitLab CI</div></td>
+              <td class="tech-justif">GitHub Actions s'intègre nativement avec les dépôts de code et offre un écosystème d'actions prêtes à l'emploi (test, lint, SAST, build Docker, push ECR). ArgoCD assure le déploiement continu via GitOps — l'état du cluster Kubernetes est déclaré dans Git et synchronisé automatiquement, éliminant les déploiements manuels responsables du taux d'échec de 18 % (FR/DE/ES/IT).</td>
+            </tr>
+
+            <tr>
+              <td><span class="tech-category">Conteneurisation &amp; Orchestration</span><span class="tech-choice">Docker + Kubernetes</span><span class="tech-version"> (AWS EKS)</span></td>
+              <td><span class="badge-tech badge-retenu">Retenu</span></td>
+              <td><div class="tech-alt"><span class="badge-tech badge-ecarte">Écarté</span> AWS ECS, VM classiques</div></td>
+              <td class="tech-justif">La containerisation est la pratique identifiée comme la plus structurante de l'application US — la seule à atteindre 98,9 % de disponibilité. Kubernetes (EKS) permet le scaling horizontal automatique (HPA), les rolling deployments sans downtime, et la gestion déclarative des ressources. ECS serait une alternative viable mais Kubernetes offre une portabilité multi-cloud supérieure pour une future neutralisation du fournisseur.</td>
+            </tr>
+
+            <tr>
+              <td><span class="tech-category">Emails transactionnels</span><span class="tech-choice">Amazon SES</span><span class="tech-version"> + React Email (templates)</span></td>
+              <td><span class="badge-tech badge-retenu">Retenu</span></td>
+              <td><div class="tech-alt"><span class="badge-tech badge-ecarte">Écarté</span> SendGrid</div></td>
+              <td class="tech-justif">Amazon SES s'intègre nativement à l'écosystème AWS déjà retenu, avec un coût à l'usage très inférieur aux plateformes tiers à l'échelle. React Email permet de créer des templates responsive et accessibles en TypeScript, partageant le langage et les composants du frontend.</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- 3. DIAGRAMME C4                                -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="section" id="architecture">
+      <div class="section-header">
+        <span class="section-num">Section 03</span>
+        <h2 class="section-title">Diagramme d'Architecture Globale (C4)</h2>
+      </div>
+      <div class="prose" style="margin-bottom:20px;">
+        <p>L'architecture est décrite à deux niveaux du modèle C4 : le contexte système (acteurs et systèmes externes) et les conteneurs (composants internes et leurs interactions). Les diagrammes sont fournis en syntaxe PlantUML et peuvent être rendus via PlantUML Server ou tout outil compatible (IDE, CI).</p>
+      </div>
+
+      <div class="sub-title">3.1 — Niveau Contexte Système (C4 Level 1)</div>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">PlantUML — C4 Context</span>
+          <span class="code-label">Générable via plantuml.com/plantuml/</span>
+        </div>
+        <div class="code-body"><pre><span class="at">@startuml</span> YCYW_C4_Context
+<span class="kw">!include</span> <span class="str">https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml</span>
+
+<span class="fn">LAYOUT_WITH_LEGEND</span>()
+<span class="fn">title</span> [Contexte Système] — Your Car Your Way · Plateforme Unifiée
+
+<span class="cm">' ── Acteurs ────────────────────────────────────────</span>
+<span class="fn">Person</span>(client,   <span class="str">"Client"</span>,           <span class="str">"Locataire (web / mobile)\nSophie, Thomas, Mei Lin"</span>)
+<span class="fn">Person</span>(agent,    <span class="str">"Agent d'agence"</span>,   <span class="str">"Gère véhicules et réservations localement"</span>)
+<span class="fn">Person</span>(admin,    <span class="str">"Administrateur"</span>,   <span class="str">"Supervision globale, configuration, reporting"</span>)
+
+<span class="cm">' ── Système principal ──────────────────────────────</span>
+<span class="fn">System</span>(ycyw, <span class="str">"Plateforme YCYW"</span>,
+  <span class="str">"Application web centralisée de location de voitures.\n7 marchés · 6 langues · 5 devises · WCAG 2.1 AA"</span>)
+
+<span class="cm">' ── Systèmes externes ──────────────────────────────</span>
+<span class="fn">System_Ext</span>(stripe, <span class="str">"Stripe"</span>,
+  <span class="str">"Paiement en ligne, tokenisation CB,\nremboursements, 3D Secure 2 (PCI-DSS)"</span>)
+<span class="fn">System_Ext</span>(ses,    <span class="str">"Amazon SES"</span>,
+  <span class="str">"Emails transactionnels :\nconfirmations, rappels, alertes"</span>)
+<span class="fn">System_Ext</span>(maps,   <span class="str">"API Cartographique"</span>,
+  <span class="str">"Géolocalisation et affichage des agences\n(Mapbox ou Google Maps)"</span>)
+<span class="fn">System_Ext</span>(fx,     <span class="str">"API Taux de Change"</span>,
+  <span class="str">"Taux EUR/GBP/USD/CAD/CNY\nmis à jour quotidiennement"</span>)
+
+<span class="cm">' ── Relations ──────────────────────────────────────</span>
+<span class="fn">Rel</span>(client, ycyw,   <span class="str">"Recherche, réserve, gère ses locations"</span>,    <span class="str">"HTTPS"</span>)
+<span class="fn">Rel</span>(agent,  ycyw,   <span class="str">"Gère le parc véhicules et les réservations"</span>, <span class="str">"HTTPS / API REST"</span>)
+<span class="fn">Rel</span>(admin,  ycyw,   <span class="str">"Supervise, configure, génère des rapports"</span>,  <span class="str">"HTTPS"</span>)
+<span class="fn">Rel</span>(ycyw,   stripe, <span class="str">"Initie et réconcilie les paiements"</span>,         <span class="str">"HTTPS / REST"</span>)
+<span class="fn">Rel</span>(ycyw,   ses,    <span class="str">"Envoie notifications transactionnelles"</span>,      <span class="str">"HTTPS / SMTP"</span>)
+<span class="fn">Rel</span>(ycyw,   maps,   <span class="str">"Géolocalise les agences"</span>,                    <span class="str">"HTTPS / REST"</span>)
+<span class="fn">Rel</span>(ycyw,   fx,     <span class="str">"Récupère les taux de change"</span>,                <span class="str">"HTTPS / REST"</span>)
+
+<span class="at">@enduml</span></pre></div>
+      </div>
+
+      <div class="sub-title">3.2 — Niveau Conteneur (C4 Level 2)</div>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">PlantUML — C4 Container</span>
+          <span class="code-label">Générable via plantuml.com/plantuml/</span>
+        </div>
+        <div class="code-body"><pre><span class="at">@startuml</span> YCYW_C4_Container
+<span class="kw">!include</span> <span class="str">https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml</span>
+
+<span class="fn">LAYOUT_WITH_LEGEND</span>()
+<span class="fn">title</span> [Conteneurs] — Your Car Your Way · Plateforme Unifiée
+
+<span class="fn">Person</span>(client, <span class="str">"Client"</span>)
+<span class="fn">Person</span>(agent,  <span class="str">"Agent d'agence"</span>)
+
+<span class="fn">System_Boundary</span>(ycyw, <span class="str">"Plateforme YCYW (AWS EKS)"</span>) {
+
+  <span class="cm">' Frontend</span>
+  <span class="fn">Container</span>(spa, <span class="str">"Frontend SPA"</span>, <span class="str">"React 18 · TypeScript · Vite"</span>,
+    <span class="str">"Interface web responsive et accessible (WCAG 2.1 AA).\nI18n 6 langues · 5 devises. Servi via CloudFront CDN."</span>)
+
+  <span class="cm">' API Gateway</span>
+  <span class="fn">Container</span>(gateway, <span class="str">"API Gateway"</span>, <span class="str">"NestJS · Node.js"</span>,
+    <span class="str">"Point d'entrée unique. Vérification JWT, rate limiting,\nrouting vers les services internes, logging centralisé."</span>)
+
+  <span class="cm">' Services métier</span>
+  <span class="fn">Container</span>(svc_user,    <span class="str">"Service Utilisateur"</span>,  <span class="str">"NestJS · Node.js"</span>,
+    <span class="str">"Profils, authentification, 2FA, documents d'identité,\nprogramme de fidélité, paramètres d'accessibilité."</span>)
+
+  <span class="fn">Container</span>(svc_resa,    <span class="str">"Service Réservation"</span>, <span class="str">"NestJS · Node.js"</span>,
+    <span class="str">"Création, modification, annulation des réservations.\nVérification disponibilité, règles tarifaires, remboursement."</span>)
+
+  <span class="fn">Container</span>(svc_vehicle, <span class="str">"Service Véhicule"</span>,    <span class="str">"NestJS · Node.js"</span>,
+    <span class="str">"Catalogue ACRISS, recherche de disponibilités, filtres\nPMR, géolocalisation des agences, comparaison d'offres."</span>)
+
+  <span class="fn">Container</span>(svc_chat,    <span class="str">"Service Tchat"</span>,       <span class="str">"NestJS · Socket.io"</span>,
+    <span class="str">"Messagerie temps réel client / agent. WebSocket.\nBot fallback hors heures ouvrées. Persistance messages."</span>)
+
+  <span class="fn">Container</span>(svc_notif,   <span class="str">"Service Notification"</span>, <span class="str">"NestJS · Node.js"</span>,
+    <span class="str">"Emails transactionnels (SES), push notifications.\nConsomme une queue d'événements interne."</span>)
+
+  <span class="cm">' Stockage</span>
+  <span class="fn">ContainerDb</span>(db,    <span class="str">"Base de données"</span>,      <span class="str">"PostgreSQL 16 · RDS Multi-AZ"</span>,
+    <span class="str">"Données relationnelles : users, agencies, vehicles,\nreservations, chat_sessions, chat_messages."</span>)
+
+  <span class="fn">ContainerDb</span>(cache, <span class="str">"Cache &amp; Sessions"</span>,   <span class="str">"Redis 7 · ElastiCache"</span>,
+    <span class="str">"Refresh tokens (TTL), cache requêtes véhicules,\nPub/Sub synchronisation tchat entre pods."</span>)
+}
+
+<span class="cm">' Systèmes externes</span>
+<span class="fn">System_Ext</span>(stripe, <span class="str">"Stripe API"</span>)
+<span class="fn">System_Ext</span>(ses,    <span class="str">"Amazon SES"</span>)
+<span class="fn">System_Ext</span>(maps,   <span class="str">"API Cartographique"</span>)
+
+<span class="cm">' Relations</span>
+<span class="fn">Rel</span>(client,      spa,         <span class="str">"Utilise"</span>,                            <span class="str">"HTTPS"</span>)
+<span class="fn">Rel</span>(agent,       gateway,     <span class="str">"Appelle l'API agence"</span>,               <span class="str">"HTTPS / REST"</span>)
+<span class="fn">Rel</span>(spa,         gateway,     <span class="str">"Requêtes REST + WebSocket"</span>,          <span class="str">"HTTPS / WSS"</span>)
+
+<span class="fn">Rel</span>(gateway,     svc_user,    <span class="str">"Route auth &amp; profil"</span>,               <span class="str">"REST interne"</span>)
+<span class="fn">Rel</span>(gateway,     svc_resa,    <span class="str">"Route réservations"</span>,                 <span class="str">"REST interne"</span>)
+<span class="fn">Rel</span>(gateway,     svc_vehicle, <span class="str">"Route catalogue &amp; recherche"</span>,        <span class="str">"REST interne"</span>)
+<span class="fn">Rel</span>(gateway,     svc_chat,    <span class="str">"Proxy WebSocket"</span>,                    <span class="str">"WSS"</span>)
+
+<span class="fn">Rel</span>(svc_user,    db,          <span class="str">"Lit / écrit users, loyalty"</span>,          <span class="str">"SQL / TCP"</span>)
+<span class="fn">Rel</span>(svc_resa,    db,          <span class="str">"Lit / écrit reservations"</span>,            <span class="str">"SQL / TCP"</span>)
+<span class="fn">Rel</span>(svc_vehicle, db,          <span class="str">"Lit agencies, vehicles"</span>,              <span class="str">"SQL / TCP"</span>)
+<span class="fn">Rel</span>(svc_chat,    db,          <span class="str">"Persiste sessions et messages"</span>,       <span class="str">"SQL / TCP"</span>)
+<span class="fn">Rel</span>(svc_user,    cache,       <span class="str">"Stocke refresh tokens"</span>,              <span class="str">"Redis"</span>)
+<span class="fn">Rel</span>(svc_vehicle, cache,       <span class="str">"Cache résultats de recherche"</span>,       <span class="str">"Redis"</span>)
+<span class="fn">Rel</span>(svc_chat,    cache,       <span class="str">"Pub/Sub messages temps réel"</span>,        <span class="str">"Redis Pub/Sub"</span>)
+<span class="fn">Rel</span>(svc_resa,    stripe,      <span class="str">"Initie &amp; réconcilie paiements"</span>,      <span class="str">"HTTPS / REST"</span>)
+<span class="fn">Rel</span>(svc_notif,   ses,         <span class="str">"Envoie emails transactionnels"</span>,      <span class="str">"HTTPS / SMTP"</span>)
+<span class="fn">Rel</span>(svc_resa,    svc_notif,   <span class="str">"Publie événements (réservation, annulation…)"</span>, <span class="str">"Queue interne"</span>)
+<span class="fn">Rel</span>(svc_vehicle, maps,        <span class="str">"Géocode &amp; affiche les agences"</span>,     <span class="str">"HTTPS / REST"</span>)
+
+<span class="at">@enduml</span></pre></div>
+      </div>
+
+      <div class="arch-desc">
+        <div class="arch-desc-title">Description des flux principaux</div>
+        <p><strong>Authentification :</strong> Le client soumet ses identifiants à l'API Gateway, qui les transmet au Service Utilisateur. Ce service vérifie le mot de passe contre le hash Argon2id en base, génère un access token JWT (RS256, TTL 15 min) et un refresh token opaque (TTL 7 jours) stocké en cookie httpOnly et persisté dans Redis avec révocation possible. Si le 2FA est activé, un code OTP est généré et envoyé via le Service Notification avant la délivrance des tokens.</p>
+        <p><strong>Réservation :</strong> Le Service Réservation vérifie la disponibilité du véhicule (verrou optimiste en base pour prévenir la double réservation), crée un Payment Intent Stripe, et attend la confirmation de paiement via webhook Stripe. À la confirmation, la réservation passe au statut <em>confirmed</em>, le véhicule est marqué indisponible, et un événement est publié dans la queue interne. Le Service Notification consomme cet événement et déclenche l'email de confirmation via SES.</p>
+        <p><strong>Tchat en temps réel :</strong> Le frontend établit une connexion WebSocket avec le Service Tchat (proxiée par l'API Gateway après vérification JWT). Chaque message entrant est persisté en base PostgreSQL et publié sur le canal Redis Pub/Sub de la session. Tous les pods du Service Tchat abonnés à ce canal diffusent le message aux connexions WebSocket concernées — garantissant la livraison même en présence de plusieurs instances actives.</p>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- 4. MODÈLE DE DONNÉES                           -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="section" id="modele">
+      <div class="section-header">
+        <span class="section-num">Section 04</span>
+        <h2 class="section-title">Modèle de Données — Schéma Relationnel</h2>
+      </div>
+      <div class="prose" style="margin-bottom:20px;">
+        <p>Le schéma relationnel est conçu pour PostgreSQL 16. Les clés primaires sont des UUID (gen_random_uuid()) pour éviter l'exposition d'identifiants séquentiels dans les URLs. Les index sont définis sur les colonnes fréquemment filtrées. Le soft-delete (champ deleted_at) est utilisé sur les users pour satisfaire le droit à l'oubli RGPD avec conservation des données comptables.</p>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">SQL — PostgreSQL 16</span>
+          <span class="code-label">Schéma initial — CREATE TABLE + INDEX</span>
+        </div>
+        <div class="code-body"><pre><span class="cm">-- ═══════════════════════════════════════════════════════════════
+-- YCYW — Schéma relationnel initial · PostgreSQL 16
+-- ═══════════════════════════════════════════════════════════════</span>
+
+<span class="cm">-- Extension UUID (disponible par défaut sur AWS RDS)</span>
+<span class="kw">CREATE EXTENSION IF NOT EXISTS</span> <span class="str">"pgcrypto"</span>;
+
+<span class="cm">-- ─────────────────────────────────────────────────────────────
+-- users : Profils des clients, agents et administrateurs.
+-- Le soft-delete (deleted_at) permet la conformité RGPD :
+-- suppression logique immédiate, purge physique différée.
+-- ─────────────────────────────────────────────────────────────</span>
+<span class="kw">CREATE TABLE</span> <span class="tp">users</span> (
+  id               <span class="tp">UUID</span>          <span class="kw">PRIMARY KEY DEFAULT</span> <span class="fn">gen_random_uuid</span>(),
+  email            <span class="tp">VARCHAR</span>(255)  <span class="kw">NOT NULL UNIQUE</span>,
+  password_hash    <span class="tp">VARCHAR</span>(255)  <span class="kw">NOT NULL</span>,          <span class="cm">-- Argon2id</span>
+  role             <span class="tp">VARCHAR</span>(20)   <span class="kw">NOT NULL DEFAULT</span> <span class="str">'client'</span>
+                     <span class="kw">CHECK</span> (role <span class="kw">IN</span> (<span class="str">'client'</span>, <span class="str">'agent'</span>, <span class="str">'admin'</span>)),
+  first_name       <span class="tp">VARCHAR</span>(100),
+  last_name        <span class="tp">VARCHAR</span>(100),
+  date_of_birth    <span class="tp">DATE</span>,
+  phone            <span class="tp">VARCHAR</span>(30),
+  locale           <span class="tp">VARCHAR</span>(10)   <span class="kw">NOT NULL DEFAULT</span> <span class="str">'fr'</span>,  <span class="cm">-- ex: 'fr', 'en', 'zh'</span>
+  currency         <span class="tp">CHAR</span>(3)       <span class="kw">NOT NULL DEFAULT</span> <span class="str">'EUR'</span>, <span class="cm">-- ISO 4217</span>
+  loyalty_points   <span class="tp">INTEGER</span>       <span class="kw">NOT NULL DEFAULT</span> 0,
+  two_fa_enabled   <span class="tp">BOOLEAN</span>       <span class="kw">NOT NULL DEFAULT</span> <span class="kw">FALSE</span>,
+  deleted_at       <span class="tp">TIMESTAMP</span>,                          <span class="cm">-- soft-delete RGPD</span>
+  created_at       <span class="tp">TIMESTAMP</span>     <span class="kw">NOT NULL DEFAULT</span> <span class="fn">NOW</span>(),
+  updated_at       <span class="tp">TIMESTAMP</span>     <span class="kw">NOT NULL DEFAULT</span> <span class="fn">NOW</span>()
+);
+<span class="kw">CREATE INDEX</span> idx_users_email      <span class="kw">ON</span> <span class="tp">users</span>(email);
+<span class="kw">CREATE INDEX</span> idx_users_deleted_at  <span class="kw">ON</span> <span class="tp">users</span>(deleted_at) <span class="kw">WHERE</span> deleted_at <span class="kw">IS NOT NULL</span>;
+
+
+<span class="cm">-- ─────────────────────────────────────────────────────────────
+-- agencies : Points de prise en charge et de retour des véhicules.
+-- Le champ opening_hours est stocké en JSONB pour flexibilité.
+-- ─────────────────────────────────────────────────────────────</span>
+<span class="kw">CREATE TABLE</span> <span class="tp">agencies</span> (
+  id             <span class="tp">UUID</span>           <span class="kw">PRIMARY KEY DEFAULT</span> <span class="fn">gen_random_uuid</span>(),
+  name           <span class="tp">VARCHAR</span>(255)   <span class="kw">NOT NULL</span>,
+  country        <span class="tp">CHAR</span>(2)        <span class="kw">NOT NULL</span>,           <span class="cm">-- ISO 3166-1 alpha-2</span>
+  city           <span class="tp">VARCHAR</span>(100),
+  address        <span class="tp">TEXT</span>,
+  postal_code    <span class="tp">VARCHAR</span>(20),
+  lat            <span class="tp">DECIMAL</span>(9,6),
+  lng            <span class="tp">DECIMAL</span>(9,6),
+  phone          <span class="tp">VARCHAR</span>(30),
+  opening_hours  <span class="tp">JSONB</span>,         <span class="cm">-- { "mon":"08:00-20:00", "tue":"08:00-20:00", ... }</span>
+  is_accessible  <span class="tp">BOOLEAN</span>        <span class="kw">NOT NULL DEFAULT</span> <span class="kw">FALSE</span>, <span class="cm">-- accessibilité PMR</span>
+  active         <span class="tp">BOOLEAN</span>        <span class="kw">NOT NULL DEFAULT</span> <span class="kw">TRUE</span>,
+  created_at     <span class="tp">TIMESTAMP</span>      <span class="kw">NOT NULL DEFAULT</span> <span class="fn">NOW</span>()
+);
+<span class="kw">CREATE INDEX</span> idx_agencies_country  <span class="kw">ON</span> <span class="tp">agencies</span>(country);
+<span class="kw">CREATE INDEX</span> idx_agencies_active   <span class="kw">ON</span> <span class="tp">agencies</span>(active) <span class="kw">WHERE</span> active = <span class="kw">TRUE</span>;
+<span class="cm">-- Index géospatial (requires PostGIS extension) :</span>
+<span class="cm">-- CREATE INDEX idx_agencies_geo ON agencies USING GIST (ST_MakePoint(lng, lat));</span>
+
+
+<span class="cm">-- ─────────────────────────────────────────────────────────────
+-- vehicles : Parc de véhicules disponibles, classifiés ACRISS.
+-- Le champ available est mis à jour transactionnellement lors
+-- de chaque réservation pour prévenir les doublons.
+-- ─────────────────────────────────────────────────────────────</span>
+<span class="kw">CREATE TABLE</span> <span class="tp">vehicles</span> (
+  id             <span class="tp">UUID</span>          <span class="kw">PRIMARY KEY DEFAULT</span> <span class="fn">gen_random_uuid</span>(),
+  agency_id      <span class="tp">UUID</span>          <span class="kw">NOT NULL REFERENCES</span> <span class="tp">agencies</span>(id) <span class="kw">ON DELETE RESTRICT</span>,
+  acriss_code    <span class="tp">CHAR</span>(4)       <span class="kw">NOT NULL</span>,     <span class="cm">-- ex: CCAR, SWAR, FVMR</span>
+  category       <span class="tp">VARCHAR</span>(50),
+  make           <span class="tp">VARCHAR</span>(50),
+  model          <span class="tp">VARCHAR</span>(50),
+  year           <span class="tp">SMALLINT</span>,
+  seats          <span class="tp">SMALLINT</span>,
+  transmission   <span class="tp">VARCHAR</span>(20)   <span class="kw">CHECK</span> (transmission <span class="kw">IN</span> (<span class="str">'manual'</span>, <span class="str">'automatic'</span>)),
+  fuel_type      <span class="tp">VARCHAR</span>(20)   <span class="kw">CHECK</span> (fuel_type <span class="kw">IN</span> (<span class="str">'petrol'</span>, <span class="str">'diesel'</span>, <span class="str">'electric'</span>, <span class="str">'hybrid'</span>)),
+  is_accessible  <span class="tp">BOOLEAN</span>       <span class="kw">NOT NULL DEFAULT</span> <span class="kw">FALSE</span>, <span class="cm">-- véhicule adapté PMR</span>
+  available      <span class="tp">BOOLEAN</span>       <span class="kw">NOT NULL DEFAULT</span> <span class="kw">TRUE</span>,
+  daily_rate     <span class="tp">DECIMAL</span>(10,2),
+  currency       <span class="tp">CHAR</span>(3)       <span class="kw">NOT NULL DEFAULT</span> <span class="str">'EUR'</span>,
+  created_at     <span class="tp">TIMESTAMP</span>     <span class="kw">NOT NULL DEFAULT</span> <span class="fn">NOW</span>()
+);
+<span class="kw">CREATE INDEX</span> idx_vehicles_agency     <span class="kw">ON</span> <span class="tp">vehicles</span>(agency_id);
+<span class="kw">CREATE INDEX</span> idx_vehicles_acriss     <span class="kw">ON</span> <span class="tp">vehicles</span>(acriss_code);
+<span class="kw">CREATE INDEX</span> idx_vehicles_available  <span class="kw">ON</span> <span class="tp">vehicles</span>(available) <span class="kw">WHERE</span> available = <span class="kw">TRUE</span>;
+
+
+<span class="cm">-- ─────────────────────────────────────────────────────────────
+-- reservations : Réservations de location créées par les clients.
+-- Le champ options (JSONB) stocke les extras souscrits.
+-- stripe_payment_intent_id garantit l'idempotence du paiement.
+-- ─────────────────────────────────────────────────────────────</span>
+<span class="kw">CREATE TABLE</span> <span class="tp">reservations</span> (
+  id                        <span class="tp">UUID</span>          <span class="kw">PRIMARY KEY DEFAULT</span> <span class="fn">gen_random_uuid</span>(),
+  user_id                   <span class="tp">UUID</span>          <span class="kw">NOT NULL REFERENCES</span> <span class="tp">users</span>(id) <span class="kw">ON DELETE RESTRICT</span>,
+  vehicle_id                <span class="tp">UUID</span>          <span class="kw">NOT NULL REFERENCES</span> <span class="tp">vehicles</span>(id) <span class="kw">ON DELETE RESTRICT</span>,
+  pickup_agency_id          <span class="tp">UUID</span>          <span class="kw">NOT NULL REFERENCES</span> <span class="tp">agencies</span>(id) <span class="kw">ON DELETE RESTRICT</span>,
+  return_agency_id          <span class="tp">UUID</span>          <span class="kw">NOT NULL REFERENCES</span> <span class="tp">agencies</span>(id) <span class="kw">ON DELETE RESTRICT</span>,
+  start_date                <span class="tp">TIMESTAMP</span>     <span class="kw">NOT NULL</span>,
+  end_date                  <span class="tp">TIMESTAMP</span>     <span class="kw">NOT NULL</span>,
+  status                    <span class="tp">VARCHAR</span>(20)   <span class="kw">NOT NULL DEFAULT</span> <span class="str">'pending'</span>
+                              <span class="kw">CHECK</span> (status <span class="kw">IN</span> (<span class="str">'pending'</span>,<span class="str">'confirmed'</span>,<span class="str">'modified'</span>,<span class="str">'cancelled'</span>,<span class="str">'completed'</span>)),
+  stripe_payment_intent_id  <span class="tp">VARCHAR</span>(255)  <span class="kw">UNIQUE</span>,    <span class="cm">-- idempotence paiement Stripe</span>
+  total_amount              <span class="tp">DECIMAL</span>(10,2) <span class="kw">NOT NULL</span>,
+  currency                  <span class="tp">CHAR</span>(3)       <span class="kw">NOT NULL DEFAULT</span> <span class="str">'EUR'</span>,
+  options                   <span class="tp">JSONB</span>,                    <span class="cm">-- { "gps":true, "child_seat":1, "insurance":"premium" }</span>
+  cancelled_at              <span class="tp">TIMESTAMP</span>,
+  refund_amount             <span class="tp">DECIMAL</span>(10,2),
+  created_at                <span class="tp">TIMESTAMP</span>     <span class="kw">NOT NULL DEFAULT</span> <span class="fn">NOW</span>(),
+  updated_at                <span class="tp">TIMESTAMP</span>     <span class="kw">NOT NULL DEFAULT</span> <span class="fn">NOW</span>(),
+  <span class="kw">CONSTRAINT</span> chk_dates <span class="kw">CHECK</span> (end_date > start_date)
+);
+<span class="kw">CREATE INDEX</span> idx_reservations_user     <span class="kw">ON</span> <span class="tp">reservations</span>(user_id);
+<span class="kw">CREATE INDEX</span> idx_reservations_vehicle  <span class="kw">ON</span> <span class="tp">reservations</span>(vehicle_id);
+<span class="kw">CREATE INDEX</span> idx_reservations_status   <span class="kw">ON</span> <span class="tp">reservations</span>(status);
+<span class="kw">CREATE INDEX</span> idx_reservations_dates    <span class="kw">ON</span> <span class="tp">reservations</span>(start_date, end_date);
+
+
+<span class="cm">-- ─────────────────────────────────────────────────────────────
+-- chat_sessions : Sessions de messagerie entre un client et le
+-- service client. Peut être liée à une réservation spécifique.
+-- ─────────────────────────────────────────────────────────────</span>
+<span class="kw">CREATE TABLE</span> <span class="tp">chat_sessions</span> (
+  id              <span class="tp">UUID</span>       <span class="kw">PRIMARY KEY DEFAULT</span> <span class="fn">gen_random_uuid</span>(),
+  user_id         <span class="tp">UUID</span>       <span class="kw">NOT NULL REFERENCES</span> <span class="tp">users</span>(id) <span class="kw">ON DELETE CASCADE</span>,
+  reservation_id  <span class="tp">UUID</span>       <span class="kw">REFERENCES</span> <span class="tp">reservations</span>(id) <span class="kw">ON DELETE SET NULL</span>,
+  status          <span class="tp">VARCHAR</span>(20) <span class="kw">NOT NULL DEFAULT</span> <span class="str">'open'</span>
+                    <span class="kw">CHECK</span> (status <span class="kw">IN</span> (<span class="str">'open'</span>, <span class="str">'closed'</span>)),
+  created_at      <span class="tp">TIMESTAMP</span>  <span class="kw">NOT NULL DEFAULT</span> <span class="fn">NOW</span>(),
+  closed_at       <span class="tp">TIMESTAMP</span>
+);
+<span class="kw">CREATE INDEX</span> idx_chat_sessions_user         <span class="kw">ON</span> <span class="tp">chat_sessions</span>(user_id);
+<span class="kw">CREATE INDEX</span> idx_chat_sessions_reservation  <span class="kw">ON</span> <span class="tp">chat_sessions</span>(reservation_id);
+<span class="kw">CREATE INDEX</span> idx_chat_sessions_status       <span class="kw">ON</span> <span class="tp">chat_sessions</span>(status) <span class="kw">WHERE</span> status = <span class="str">'open'</span>;
+
+
+<span class="cm">-- ─────────────────────────────────────────────────────────────
+-- chat_messages : Messages individuels d'une session de tchat.
+-- sender_role distingue client, agent humain et bot de support.
+-- ─────────────────────────────────────────────────────────────</span>
+<span class="kw">CREATE TABLE</span> <span class="tp">chat_messages</span> (
+  id           <span class="tp">UUID</span>       <span class="kw">PRIMARY KEY DEFAULT</span> <span class="fn">gen_random_uuid</span>(),
+  session_id   <span class="tp">UUID</span>       <span class="kw">NOT NULL REFERENCES</span> <span class="tp">chat_sessions</span>(id) <span class="kw">ON DELETE CASCADE</span>,
+  sender_role  <span class="tp">VARCHAR</span>(20) <span class="kw">NOT NULL</span>
+                 <span class="kw">CHECK</span> (sender_role <span class="kw">IN</span> (<span class="str">'client'</span>, <span class="str">'agent'</span>, <span class="str">'bot'</span>)),
+  sender_id    <span class="tp">UUID</span>       <span class="kw">REFERENCES</span> <span class="tp">users</span>(id) <span class="kw">ON DELETE SET NULL</span>, <span class="cm">-- NULL si bot</span>
+  content      <span class="tp">TEXT</span>       <span class="kw">NOT NULL</span>,
+  sent_at      <span class="tp">TIMESTAMP</span>  <span class="kw">NOT NULL DEFAULT</span> <span class="fn">NOW</span>(),
+  read_at      <span class="tp">TIMESTAMP</span>                      <span class="cm">-- NULL = non lu</span>
+);
+<span class="kw">CREATE INDEX</span> idx_chat_messages_session  <span class="kw">ON</span> <span class="tp">chat_messages</span>(session_id);
+<span class="kw">CREATE INDEX</span> idx_chat_messages_sent_at  <span class="kw">ON</span> <span class="tp">chat_messages</span>(sent_at);</pre></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- 5. SÉCURITÉ ET CONFORMITÉ                      -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="section" id="securite">
+      <div class="section-header">
+        <span class="section-num">Section 05</span>
+        <h2 class="section-title">Stratégie de Sécurité et Conformité</h2>
+      </div>
+      <div class="prose" style="margin-bottom:22px;">
+        <p>La stratégie de sécurité est construite en réponse directe aux défaillances identifiées dans l'audit. Elle couvre cinq domaines : authentification, gestion des secrets, transport, RGPD et conformité PCI-DSS.</p>
+      </div>
+      <div class="sec-grid">
+
+        <div class="sec-block">
+          <div class="sec-head">
+            <div class="sec-letter">A</div>
+            <div class="sec-title">Authentification et gestion des mots de passe</div>
+          </div>
+          <div class="sec-body">
+            <p>L'algorithme de hachage retenu est <strong>Argon2id</strong> (vainqueur de la Password Hashing Competition 2015, recommandation OWASP 2024), configuré avec un coût mémoire de 64 Mo, 3 itérations et 2 threads parallèles. Ce choix remplace directement SHA-1 (FR/DE/ES/IT) et bcrypt cost 10 (UK) identifiés dans l'audit.</p>
+            <p>La gestion des sessions repose sur deux tokens distincts. L'<strong>access token JWT (RS256)</strong> a une durée de vie de 15 minutes — limiter l'exposition en cas d'interception. Le <strong>refresh token</strong> est un token opaque de 64 octets aléatoires, TTL 7 jours, avec rotation à chaque usage (rotation détectée = révocation de la famille de tokens). Il est transmis exclusivement via cookie httpOnly + Secure + SameSite=Strict pour prévenir les attaques XSS.</p>
+            <div class="sec-detail">
+              <span class="sec-chip good">Argon2id (64 Mo, 3 iter)</span>
+              <span class="sec-chip good">JWT RS256 · TTL 15 min</span>
+              <span class="sec-chip good">Refresh Token rotation</span>
+              <span class="sec-chip good">httpOnly + SameSite=Strict</span>
+              <span class="sec-chip">Verrouillage 5 tentatives</span>
+              <span class="sec-chip">2FA TOTP / SMS</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-block">
+          <div class="sec-head">
+            <div class="sec-letter">B</div>
+            <div class="sec-title">Gestion des secrets</div>
+          </div>
+          <div class="sec-body">
+            <p>Aucun secret (clé API, mot de passe de base de données, clé de signature JWT) ne doit apparaître dans le code source, les fichiers de configuration versionnés, ou les images Docker. Cette règle est la première leçon tirée de l'audit : FR/DE/ES/IT stocke ses secrets dans des fichiers de configuration sur serveur — pratique inacceptable.</p>
+            <p>Les secrets sont gérés via <strong>AWS Secrets Manager</strong>, avec rotation automatique activée pour les credentials de base de données (tous les 30 jours). Les secrets sont injectés en variables d'environnement dans les conteneurs Kubernetes au moment du démarrage via des Kubernetes Secrets chiffrés à l'aide d'une clé KMS. Un scan de secrets (GitGuardian ou truffleHog) est intégré dans la pipeline CI pour rejeter tout commit contenant un secret détecté.</p>
+            <div class="sec-detail">
+              <span class="sec-chip good">AWS Secrets Manager</span>
+              <span class="sec-chip good">Rotation automatique (30 j)</span>
+              <span class="sec-chip good">Kubernetes Secrets + KMS</span>
+              <span class="sec-chip good">Scan CI (GitGuardian)</span>
+              <span class="sec-chip warn">Aucun secret dans le code</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-block">
+          <div class="sec-head">
+            <div class="sec-letter">C</div>
+            <div class="sec-title">Conformité TLS</div>
+          </div>
+          <div class="sec-body">
+            <p>La version minimale de TLS autorisée est <strong>TLS 1.3</strong> sur l'ensemble des points d'entrée publics (CloudFront, API Gateway, Load Balancer). TLS 1.2 est accepté en fallback uniquement pour les environnements d'intégration partenaires qui ne supportent pas encore TLS 1.3, avec une politique de dépréciation documentée à 18 mois. TLS 1.0 et TLS 1.1 sont explicitement désactivés — sans exception, en réponse directe à leur présence sur FR et IT dans l'audit.</p>
+            <p>Les certificats TLS sont gérés via <strong>AWS Certificate Manager (ACM)</strong> avec renouvellement automatique. L'en-tête HTTP Strict-Transport-Security (HSTS) est configuré avec max-age=31536000 et includeSubDomains.</p>
+            <div class="sec-detail">
+              <span class="sec-chip good">TLS 1.3 minimum</span>
+              <span class="sec-chip good">HSTS · max-age 1 an</span>
+              <span class="sec-chip good">ACM · renouvellement auto</span>
+              <span class="sec-chip warn">TLS 1.0/1.1 désactivés</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-block">
+          <div class="sec-head">
+            <div class="sec-letter">D</div>
+            <div class="sec-title">Conformité RGPD</div>
+          </div>
+          <div class="sec-body">
+            <p><strong>Minimisation des données :</strong> Seuls les champs strictement nécessaires à chaque fonctionnalité sont collectés. Le numéro de carte bancaire n'est jamais collecté — il est saisi directement dans Stripe Elements côté navigateur.</p>
+            <p><strong>Droit à l'oubli :</strong> La suppression de compte est implémentée en deux temps. Le soft-delete (<em>deleted_at</em> non null) est appliqué immédiatement — l'utilisateur perd l'accès instantanément. Une tâche planifiée (cron) évalue quotidiennement les comptes supprimés et effectue l'anonymisation physique (remplacement des données personnelles par des valeurs hachées ou nulles) à l'issue de la durée légale de conservation des données comptables (5 ans). Les données de réservation anonymisées sont conservées pour les obligations légales.</p>
+            <p><strong>Consentement :</strong> Le bandeau cookies respecte la recommandation CNIL — pas de pré-cochage, pas d'action implicite valant consentement. Les préférences de consentement sont stockées avec leur horodatage et la version de la politique d'utilisation acceptée.</p>
+            <div class="sec-detail">
+              <span class="sec-chip good">Soft-delete + anonymisation</span>
+              <span class="sec-chip good">Export données (JSON/CSV)</span>
+              <span class="sec-chip good">Consentement granulaire</span>
+              <span class="sec-chip">Registre des traitements</span>
+              <span class="sec-chip">DPO désigné</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-block">
+          <div class="sec-head">
+            <div class="sec-letter">E</div>
+            <div class="sec-title">Conformité PCI-DSS (Paiement)</div>
+          </div>
+          <div class="sec-body">
+            <p>La conformité PCI-DSS est assurée par l'utilisation de <strong>Stripe Elements</strong>, qui isole complètement la saisie des données de carte dans un iframe hébergé par Stripe. Les données de carte ne transitent à aucun moment par les serveurs YCYW — le backend ne manipule que des objets Stripe (Payment Intent ID, Customer ID), jamais de PAN, CVV ou date d'expiration.</p>
+            <p>Ce choix positionne YCYW en niveau <strong>SAQ A</strong> de conformité PCI-DSS — la plus légère des auto-évaluations, applicable aux marchands dont les pages de paiement sont entièrement externalisées chez un tiers certifié (Stripe est certifié PCI-DSS niveau 1). Les remboursements sont initiés via l'API Stripe (jamais manuellement), assurant une piste d'audit complète. Les webhooks Stripe sont vérifiés par signature (Stripe-Signature header) pour prévenir les rejeux.</p>
+            <div class="sec-detail">
+              <span class="sec-chip good">Stripe Elements (iframe)</span>
+              <span class="sec-chip good">PCI-DSS SAQ A</span>
+              <span class="sec-chip good">Aucun PAN/CVV côté backend</span>
+              <span class="sec-chip good">Webhooks signés</span>
+              <span class="sec-chip">Remboursement via API</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- 6. PLAN DE MIGRATION                           -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="section" id="migration">
+      <div class="section-header">
+        <span class="section-num">Section 06</span>
+        <h2 class="section-title">Plan de Migration depuis l'Existant</h2>
+      </div>
+      <div class="prose" style="margin-bottom:22px;">
+        <p>La migration s'articule en trois phases séquentielles. L'objectif est de ne jamais interrompre le service existant pendant la transition, de garantir la conformité RGPD de chaque transfert de données, et de valider la nouvelle plateforme sur un marché pilote avant la généralisation.</p>
+      </div>
+
+      <div class="phase-grid">
+
+        <!-- Phase 1 -->
+        <div class="phase-card">
+          <div class="phase-card-head">
+            <div class="phase-num p1-color">1</div>
+            <div class="phase-head-info">
+              <div class="phase-title">Remédiation Urgente de l'Existant</div>
+              <div class="phase-subtitle">À réaliser avant le début de la migration — parallèle au démarrage du projet</div>
+            </div>
+            <span class="phase-duration d-red">2 à 4 semaines</span>
+          </div>
+          <div class="phase-body">
+            <p>L'audit identifie des vulnérabilités critiques qui ne peuvent attendre la mise en production de la nouvelle plateforme. Cette phase traite les risques immédiats sur le parc existant sans attendre la refonte.</p>
+            <ul>
+              <li><strong>Migration SHA-1 → Argon2id (FR/DE/ES/IT) :</strong> Migrer les hashs de mots de passe de façon transparente. Le nouveau hash Argon2id est calculé à la prochaine connexion réussie de chaque utilisateur (migration lazy). Un batch nocturne force une réinitialisation de mot de passe pour les comptes inactifs depuis plus de 6 mois.</li>
+              <li><strong>Désactivation de TLS 1.0 et TLS 1.1 (FR et IT) :</strong> Mise à jour de la configuration des serveurs OVH concernés. Test de compatibilité préalable avec les partenaires d'intégration. Application du protocole TLS 1.2 minimum en attendant la migration vers TLS 1.3 sur la nouvelle plateforme.</li>
+              <li><strong>Rotation des secrets applicatifs :</strong> Renouvellement de toutes les clés API, credentials de base de données et tokens d'intégration sur FR/DE/ES/IT. Migration des secrets vers des variables d'environnement (au minimum) ou AWS Secrets Manager si l'infrastructure le permet. Révocation des anciens secrets après transition.</li>
+              <li><strong>Audit et patch des vulnérabilités packages :</strong> Exécution d'un audit de dépendances (OWASP Dependency-Check) sur les quatre groupes. Mise à jour prioritaire des bibliothèques présentant des CVE critiques ou élevées — en particulier les 41 % de packages vulnérables identifiés sur FR.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Phase 2 -->
+        <div class="phase-card">
+          <div class="phase-card-head">
+            <div class="phase-num p2-color">2</div>
+            <div class="phase-head-info">
+              <div class="phase-title">Déploiement Parallèle avec Marché Pilote</div>
+              <div class="phase-subtitle">Nouvelle plateforme en production — l'existant reste actif en parallèle</div>
+            </div>
+            <span class="phase-duration d-amber">3 à 6 mois</span>
+          </div>
+          <div class="phase-body">
+            <p>La nouvelle plateforme est développée, testée et déployée en production sur un marché pilote unique, pendant que l'ensemble du parc existant continue d'opérer normalement.</p>
+            <ul>
+              <li><strong>Sélection du marché pilote :</strong> Le Royaume-Uni est recommandé — application PHP Laravel la plus récente du portefeuille continental, modèle de données moins divergent, équipe opérationnelle familière avec AWS. L'application UK est la mieux positionnée pour une migration de données initiale.</li>
+              <li><strong>Développement de la nouvelle plateforme :</strong> Développement par cycles de deux semaines (sprints), en suivant les 27 user stories du cahier des charges v2.0 priorisées MoSCoW. Les fonctionnalités Must Have (authentification, recherche, réservation, paiement) sont livrées en priorité.</li>
+              <li><strong>Feature flags par pays :</strong> Un système de feature flags (ex. LaunchDarkly ou Unleash) permet d'activer progressivement des fonctionnalités pour le marché pilote sans affecter les autres marchés. La nouvelle plateforme est déployée derrière un flag <em>market=UK</em> — les utilisateurs UK sont redirigés vers la nouvelle URL, les autres marchés continuent sur l'ancien système.</li>
+              <li><strong>Migration des données UK :</strong> ETL (Extract, Transform, Load) de la base de données UK vers le schéma unifié PostgreSQL. Validation de la qualité des données migrées (tests d'intégrité référentielle, réconciliation des comptes actifs). Conformité RGPD de la migration documentée (finalité, base légale, durée de conservation).</li>
+              <li><strong>Validation et stabilisation :</strong> Période d'exploitation parallèle d'au minimum 4 semaines sur le marché pilote. Suivi des KPIs cibles (disponibilité ≥ 99,9 %, taux d'erreur &lt; 0,5 %, MTTR &lt; 30 min). Revue de sécurité (pentest externe) avant passage à la phase 3.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Phase 3 -->
+        <div class="phase-card">
+          <div class="phase-card-head">
+            <div class="phase-num p3-color">3</div>
+            <div class="phase-head-info">
+              <div class="phase-title">Bascule Progressive et Décommissionnement</div>
+              <div class="phase-subtitle">Généralisation pays par pays — décommissionnement progressif des anciens systèmes</div>
+            </div>
+            <span class="phase-duration d-green">6 à 12 mois</span>
+          </div>
+          <div class="phase-body">
+            <p>Fort des enseignements du marché pilote, la bascule est déployée séquentiellement sur les marchés restants, dans un ordre priorisé par le rapport risque/effort de migration des données.</p>
+            <ul>
+              <li><strong>Ordre de bascule recommandé :</strong> Canada (stack Node.js/React, familiarité AWS, modèle de données relativement proche), puis États-Unis (containerisé, bien documenté), puis Italie, Espagne, Allemagne, et France en dernier (marché le plus complexe, dette technique la plus élevée, base utilisateurs la plus volumineuse).</li>
+              <li><strong>Migration des données par pays :</strong> Pour chaque marché, une fenêtre de maintenance planifiée (nuit creuse) est utilisée pour le cut-over de la base de données. Les utilisateurs sont notifiés 48h à l'avance. La migration respecte la conformité RGPD : les données sont transférées sans changer de responsable de traitement (même entité juridique YCYW), la finalité reste identique — aucun nouveau consentement n'est requis, mais les utilisateurs sont informés (obligation d'information Art. 14 RGPD).</li>
+              <li><strong>Migration des mots de passe :</strong> Les hashs Argon2id (déjà migrés en Phase 1 pour FR/DE/ES/IT) sont importés directement. Les anciens hashs bcrypt (UK, US) sont conservés et re-hashés à la première connexion via le mécanisme de migration lazy (validation du hash ancien, recalcul en Argon2id).</li>
+              <li><strong>Décommissionnement progressif :</strong> Après 30 jours de stabilisation sur la nouvelle plateforme, les anciennes applications sont mises en mode lecture seule (lecture des réservations historiques uniquement), puis décommissionnées définitivement après 90 jours. Les serveurs OVH sont restitués. Les bases de données archivées sont conservées chiffrées pendant 5 ans (obligations légales) puis purgées.</li>
+              <li><strong>Validation RGPD finale :</strong> Mise à jour du registre des traitements, révision des DPA (Data Processing Agreements) avec les sous-traitants, audit de conformité par le DPO, et clôture du projet avec rapport d'audit final documentant la chaîne de traitement des données tout au long de la migration.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="margin-top:20px;padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);border-top:2px solid var(--accent)">
+        <div style="font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;color:var(--text-1);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Points de vigilance transverses</div>
+        <p style="font-size:14px;color:var(--text-2);line-height:1.65;margin-bottom:.6em">La migration représente une période de risque opérationnel élevé. Deux pratiques sont non négociables : <strong>aucun cut-over sans rollback testé</strong> (chaque migration doit avoir un plan de retour à l'ancien système en moins de 2 heures), et <strong>aucune migration de données sans audit RGPD préalable</strong> (chaque lot de données migré doit avoir une base légale documentée et un responsable désigné).</p>
+        <p style="font-size:14px;color:var(--text-2);line-height:1.65">La durée totale estimée de la migration — phases 2 et 3 confondues — est de <strong>9 à 18 mois</strong> selon les ressources mobilisées et les aléas rencontrés en Phase 3. Cette estimation ne prend pas en compte la Phase 1 (remédiation urgente), qui doit démarrer immédiatement et de manière indépendante.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-copy">© 2026 Your Car Your Way — Document confidentiel, usage interne uniquement.</span>
+    <span class="footer-copy">Proposition d'Architecture v1.0 · Architecture Logicielle</span>
+  </div>
+</footer>
+
+<script>
+(function() {
+  const sections = document.querySelectorAll('section[id]');
+  const links    = document.querySelectorAll('.nav-list a');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting)
+        links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+    });
+  }, { threshold: 0.15 });
+  sections.forEach(s => obs.observe(s));
+})();
+</script>
+</body>
+</html>

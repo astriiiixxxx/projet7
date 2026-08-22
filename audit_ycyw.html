@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Car Your Way — Audit Technique</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap">
+<style>
+/* ── Tokens ─────────────────────────────────────────── */
+:root {
+  --bg:          #F1F4FA;
+  --surface:     #FFFFFF;
+  --surface-2:   #E8EDF6;
+  --border:      #D2D9E8;
+  --text-1:      #08152A;
+  --text-2:      #3A4F6A;
+  --text-3:      #7788A2;
+  --accent:      #1A4FDB;
+  --accent-dim:  #EBF0FD;
+  --warm:        #C27C0A;
+  --warm-dim:    #FEF3DC;
+
+  /* Rating semantic colors */
+  --r-crit:      #C81E1E; --r-crit-bg: #FEE2E2;
+  --r-insuf:     #B45309; --r-insuf-bg: #FEF3C7;
+  --r-accept:    #1D4ED8; --r-accept-bg: #DBEAFE;
+  --r-bon:       #065F46; --r-bon-bg: #D1FAE5;
+
+  --nav-w: 224px;
+  --radius: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:          #0A1020;
+    --surface:     #111825;
+    --surface-2:   #182030;
+    --border:      #1E2C42;
+    --text-1:      #D8E4F5;
+    --text-2:      #8898B5;
+    --text-3:      #4C607C;
+    --accent:      #5B82F5;
+    --accent-dim:  #182050;
+    --warm:        #F59E0B;
+    --warm-dim:    #2A2008;
+    --r-crit:      #F87171; --r-crit-bg:   #450A0A;
+    --r-insuf:     #FCD34D; --r-insuf-bg:  #3D2608;
+    --r-accept:    #93C5FD; --r-accept-bg: #0F2557;
+    --r-bon:       #6EE7B7; --r-bon-bg:    #022C22;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:          #0A1020;
+  --surface:     #111825;
+  --surface-2:   #182030;
+  --border:      #1E2C42;
+  --text-1:      #D8E4F5;
+  --text-2:      #8898B5;
+  --text-3:      #4C607C;
+  --accent:      #5B82F5;
+  --accent-dim:  #182050;
+  --warm:        #F59E0B;
+  --warm-dim:    #2A2008;
+  --r-crit:      #F87171; --r-crit-bg:   #450A0A;
+  --r-insuf:     #FCD34D; --r-insuf-bg:  #3D2608;
+  --r-accept:    #93C5FD; --r-accept-bg: #0F2557;
+  --r-bon:       #6EE7B7; --r-bon-bg:    #022C22;
+}
+/* ── Reset ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text-1);
+  font-family: 'Lora', Georgia, serif;
+  line-height: 1.72;
+}
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* ── Header ─────────────────────────────────────────── */
+.site-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.header-inner {
+  max-width: 1180px; margin: 0 auto; padding: 0 20px;
+  display: flex; align-items: center; gap: 20px; height: 60px;
+}
+.logo-mark { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo-icon {
+  width: 34px; height: 34px; background: var(--accent);
+  border-radius: 7px; display: flex; align-items: center; justify-content: center;
+}
+.logo-icon svg { fill: #fff; }
+.logo-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 17px; font-weight: 700; letter-spacing: .02em; color: var(--text-1);
+}
+.logo-name span { color: var(--accent); }
+.header-right {
+  margin-left: auto; display: flex; align-items: center; gap: 12px;
+}
+.header-doc {
+  font-family: 'Barlow', sans-serif; font-size: 12.5px;
+  font-weight: 500; color: var(--text-3);
+}
+.header-badge {
+  background: var(--r-crit-bg); color: var(--r-crit);
+  font-family: 'Barlow', sans-serif; font-size: 10.5px;
+  font-weight: 700; letter-spacing: .08em; padding: 3px 8px;
+  border-radius: 4px; text-transform: uppercase; white-space: nowrap;
+}
+
+/* ── Layout ─────────────────────────────────────────── */
+.layout {
+  max-width: 1180px; margin: 0 auto;
+  padding: 0 20px; display: flex; gap: 44px;
+}
+.sidebar {
+  width: var(--nav-w); flex-shrink: 0; padding-top: 32px;
+}
+.sidebar-inner { position: sticky; top: 24px; }
+.sidebar-label {
+  font-family: 'Barlow', sans-serif; font-size: 10px;
+  font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--text-3); margin-bottom: 10px;
+}
+.nav-list { list-style: none; }
+.nav-list li + li { margin-top: 1px; }
+.nav-list a {
+  display: block; padding: 5px 11px; border-radius: 6px;
+  font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 500;
+  color: var(--text-2); text-decoration: none;
+  transition: background .15s, color .15s;
+  border-left: 2px solid transparent;
+}
+.nav-list a:hover, .nav-list a.active {
+  background: var(--accent-dim); color: var(--accent);
+  border-left-color: var(--accent);
+}
+.nav-divider { height: 1px; background: var(--border); margin: 10px 0; }
+.nav-meta {
+  font-family: 'Barlow', sans-serif; font-size: 11px;
+  color: var(--text-3); line-height: 1.65; margin-top: 20px;
+}
+/* Legend in sidebar */
+.legend-title {
+  font-family: 'Barlow', sans-serif; font-size: 10px;
+  font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-3); margin-bottom: 8px; margin-top: 20px;
+}
+.legend-row {
+  display: flex; align-items: center; gap: 7px;
+  margin-bottom: 5px;
+}
+.legend-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
+.legend-label {
+  font-family: 'Barlow', sans-serif; font-size: 11.5px;
+  color: var(--text-2); font-weight: 500;
+}
+
+/* ── Main ───────────────────────────────────────────── */
+.main-content {
+  flex: 1; min-width: 0;
+  padding-top: 44px; padding-bottom: 80px;
+}
+
+/* ── Doc header ─────────────────────────────────────── */
+.doc-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 32px; margin-bottom: 52px;
+}
+.doc-eyebrow {
+  font-family: 'Barlow', sans-serif; font-size: 11px;
+  font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 10px;
+}
+.doc-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(30px, 4.5vw, 48px);
+  font-weight: 700; line-height: 1.1; color: var(--text-1);
+  text-wrap: balance; margin-bottom: 14px;
+}
+.doc-subtitle {
+  font-size: 16px; color: var(--text-2);
+  max-width: 620px; line-height: 1.65; margin-bottom: 26px;
+}
+.doc-meta-row { display: flex; flex-wrap: wrap; gap: 24px; }
+.doc-meta-item { display: flex; flex-direction: column; gap: 2px; }
+.doc-meta-label {
+  font-family: 'Barlow', sans-serif; font-size: 10px;
+  font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-3);
+}
+.doc-meta-val {
+  font-family: 'Barlow', sans-serif; font-size: 13.5px;
+  font-weight: 600; color: var(--text-1);
+}
+
+/* ── Section ────────────────────────────────────────── */
+.section { margin-bottom: 68px; }
+.section-header {
+  display: flex; align-items: baseline; gap: 14px;
+  margin-bottom: 28px; border-bottom: 2px solid var(--accent);
+  padding-bottom: 10px;
+}
+.section-num {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 12px;
+  font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--accent); flex-shrink: 0;
+}
+.section-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 24px; font-weight: 700; color: var(--text-1); text-wrap: balance;
+}
+
+/* ── Prose ──────────────────────────────────────────── */
+.prose p { margin-bottom: .95em; font-size: 15px; color: var(--text-2); }
+.prose p:last-child { margin-bottom: 0; }
+.prose strong { font-weight: 700; color: var(--text-1); }
+
+/* ── Criteria cards ─────────────────────────────────── */
+.criteria-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 16px; margin-bottom: 0;
+}
+.criteria-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px;
+  border-top: 3px solid var(--accent);
+}
+.criteria-icon { font-size: 22px; margin-bottom: 10px; }
+.criteria-title {
+  font-family: 'Barlow', sans-serif; font-weight: 700;
+  font-size: 14px; color: var(--text-1); margin-bottom: 8px;
+  text-transform: uppercase; letter-spacing: .05em;
+}
+.criteria-body { font-size: 13.5px; color: var(--text-2); line-height: 1.6; }
+
+/* ── App section ────────────────────────────────────── */
+.app-block {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); margin-bottom: 24px; overflow: hidden;
+}
+.app-block-head {
+  padding: 16px 20px 14px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; gap: 14px;
+  flex-wrap: wrap;
+}
+.app-flag { font-size: 22px; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+.app-head-info { flex: 1; }
+.app-title {
+  font-family: 'Barlow', sans-serif; font-weight: 700;
+  font-size: 16px; color: var(--text-1); margin-bottom: 3px;
+}
+.app-stack {
+  font-family: 'Barlow', sans-serif; font-size: 12px;
+  color: var(--text-3); font-weight: 500; letter-spacing: .02em;
+}
+.app-kpi-row {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; align-items: center;
+}
+.kpi-chip {
+  display: flex; flex-direction: column; align-items: center;
+  background: var(--surface-2); border-radius: 6px;
+  padding: 5px 10px; min-width: 64px;
+}
+.kpi-val {
+  font-family: 'Barlow', sans-serif; font-weight: 700;
+  font-size: 14px; color: var(--text-1); font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.kpi-val.bad  { color: var(--r-crit); }
+.kpi-val.warn { color: var(--r-insuf); }
+.kpi-val.ok   { color: var(--r-accept); }
+.kpi-val.good { color: var(--r-bon); }
+.kpi-label {
+  font-family: 'Barlow', sans-serif; font-size: 9.5px;
+  font-weight: 600; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--text-3); margin-top: 1px; white-space: nowrap;
+}
+.app-body { display: grid; grid-template-columns: 1fr 1fr; }
+@media (max-width: 640px) { .app-body { grid-template-columns: 1fr; } }
+.app-col { padding: 16px 20px; }
+.app-col + .app-col { border-left: 1px solid var(--border); }
+@media (max-width: 640px) { .app-col + .app-col { border-left: none; border-top: 1px solid var(--border); } }
+.app-col-title {
+  font-family: 'Barlow', sans-serif; font-size: 10px;
+  font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.col-title-pos { color: var(--r-bon); }
+.col-title-neg { color: var(--r-crit); }
+.app-col ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.app-col ul li {
+  font-size: 13.5px; color: var(--text-2); line-height: 1.5;
+  padding-left: 14px; position: relative;
+}
+.app-col ul li::before {
+  content: '';
+  position: absolute; left: 0; top: 7px;
+  width: 5px; height: 5px; border-radius: 50%;
+}
+.app-col.pos ul li::before { background: var(--r-bon); }
+.app-col.neg ul li::before { background: var(--r-crit); }
+.data-tag {
+  display: inline;
+  font-family: 'Barlow', sans-serif; font-size: 11.5px;
+  font-weight: 700; color: var(--text-1);
+  background: var(--surface-2); border-radius: 3px;
+  padding: 1px 5px; margin: 0 1px;
+  white-space: nowrap;
+}
+.data-tag.bad  { background: var(--r-crit-bg);  color: var(--r-crit); }
+.data-tag.warn { background: var(--r-insuf-bg); color: var(--r-insuf); }
+.data-tag.ok   { background: var(--r-accept-bg); color: var(--r-accept); }
+.data-tag.good { background: var(--r-bon-bg);   color: var(--r-bon); }
+
+/* ── Transverse risks ───────────────────────────────── */
+.risk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.risk-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px 20px;
+  border-left: 3px solid var(--r-crit);
+}
+.risk-card.warn { border-left-color: var(--r-insuf); }
+.risk-title {
+  font-family: 'Barlow', sans-serif; font-weight: 700;
+  font-size: 13.5px; color: var(--text-1); margin-bottom: 8px;
+  text-transform: uppercase; letter-spacing: .04em;
+}
+.risk-body { font-size: 13.5px; color: var(--text-2); line-height: 1.6; }
+.risk-body strong { color: var(--text-1); font-weight: 700; }
+
+/* ── Synthesis table ────────────────────────────────── */
+.table-wrap { overflow-x: auto; }
+.synth-table {
+  width: 100%; border-collapse: collapse;
+  min-width: 600px;
+}
+.synth-table th {
+  font-family: 'Barlow', sans-serif; font-size: 11px;
+  font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--text-3); background: var(--surface-2);
+  padding: 9px 14px; text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.synth-table th:first-child { min-width: 130px; }
+.synth-table td {
+  padding: 11px 14px; border-bottom: 1px solid var(--border);
+  font-family: 'Barlow', sans-serif; font-size: 13px; vertical-align: middle;
+}
+.synth-table tr:last-child td { border-bottom: none; }
+.synth-table tr { background: var(--surface); }
+.synth-table tr:hover { background: var(--surface-2); transition: background .1s; }
+.synth-table td.row-head {
+  font-weight: 700; color: var(--text-1); font-size: 13.5px;
+}
+.badge-r {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: 'Barlow', sans-serif; font-size: 10.5px;
+  font-weight: 700; letter-spacing: .05em; padding: 4px 9px;
+  border-radius: 5px; white-space: nowrap;
+}
+.badge-r::before {
+  content: ''; display: inline-block;
+  width: 6px; height: 6px; border-radius: 50%;
+}
+.r-crit    { background: var(--r-crit-bg);   color: var(--r-crit); }
+.r-crit::before    { background: var(--r-crit); }
+.r-insuf   { background: var(--r-insuf-bg);  color: var(--r-insuf); }
+.r-insuf::before   { background: var(--r-insuf); }
+.r-accept  { background: var(--r-accept-bg); color: var(--r-accept); }
+.r-accept::before  { background: var(--r-accept); }
+.r-bon     { background: var(--r-bon-bg);    color: var(--r-bon); }
+.r-bon::before     { background: var(--r-bon); }
+
+/* ── Conclusion ─────────────────────────────────────── */
+.conclusion-banner {
+  background: var(--r-crit-bg);
+  border: 1px solid var(--r-crit);
+  border-radius: var(--radius); padding: 20px 24px; margin-bottom: 24px;
+}
+.conclusion-banner-title {
+  font-family: 'Barlow', sans-serif; font-weight: 700;
+  font-size: 16px; color: var(--r-crit); margin-bottom: 8px;
+  text-transform: uppercase; letter-spacing: .05em;
+}
+.conclusion-banner p {
+  font-size: 14.5px; color: var(--text-2); line-height: 1.65;
+}
+.conclusion-banner strong { color: var(--text-1); font-weight: 700; }
+
+.finding-block {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px 20px;
+  margin-bottom: 14px;
+}
+.finding-title {
+  font-family: 'Barlow', sans-serif; font-weight: 700;
+  font-size: 13px; color: var(--text-1); margin-bottom: 6px;
+  text-transform: uppercase; letter-spacing: .05em;
+  display: flex; align-items: center; gap: 8px;
+}
+.finding-body { font-size: 14px; color: var(--text-2); line-height: 1.62; }
+.finding-body strong { color: var(--text-1); font-weight: 700; }
+
+/* ── Subsection title ───────────────────────────────── */
+.sub-title {
+  font-family: 'Barlow', sans-serif; font-size: 14px;
+  font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text-1); margin: 32px 0 14px;
+  padding-bottom: 6px; border-bottom: 1px dashed var(--border);
+}
+
+/* ── Footer ─────────────────────────────────────────── */
+.site-footer {
+  background: var(--surface); border-top: 1px solid var(--border);
+  padding: 22px 0; margin-top: 40px;
+}
+.footer-inner {
+  max-width: 1180px; margin: 0 auto; padding: 0 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px;
+}
+.footer-copy {
+  font-family: 'Barlow', sans-serif; font-size: 11.5px; color: var(--text-3);
+}
+/* ── Responsive ─────────────────────────────────────── */
+@media (max-width: 800px) {
+  .sidebar { display: none; }
+  .layout { padding: 0 16px; }
+  .main-content { padding-top: 28px; }
+  .criteria-grid { grid-template-columns: 1fr; }
+  .risk-grid { grid-template-columns: 1fr; }
+  .app-kpi-row { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Header ───────────────────────────────────────── -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo-mark" href="#">
+      <div class="logo-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-5h14v5z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg>
+      </div>
+      <span class="logo-name">Your Car <span>Your Way</span></span>
+    </a>
+    <div class="header-right">
+      <span class="header-doc">Audit Technique — Applications Existantes</span>
+      <span class="header-badge">Confidentiel</span>
+    </div>
+  </div>
+</header>
+
+<!-- ── Body ─────────────────────────────────────────── -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <nav class="sidebar" aria-label="Navigation du document">
+    <div class="sidebar-inner">
+      <div class="sidebar-label">Sommaire</div>
+      <ul class="nav-list">
+        <li><a href="#criteres">1. Critères d'évaluation</a></li>
+        <li><a href="#analyse">2. Analyse par application</a></li>
+        <li><a href="#transverse">3. Analyse transverse</a></li>
+        <li><a href="#synthese">4. Tableau de synthèse</a></li>
+        <li><a href="#conclusion">5. Conclusion</a></li>
+      </ul>
+      <div class="nav-divider"></div>
+      <div class="legend-title">Niveaux de notation</div>
+      <div class="legend-row"><div class="legend-dot" style="background:var(--r-crit)"></div><span class="legend-label">Critique</span></div>
+      <div class="legend-row"><div class="legend-dot" style="background:var(--r-insuf)"></div><span class="legend-label">Insuffisant</span></div>
+      <div class="legend-row"><div class="legend-dot" style="background:var(--r-accept)"></div><span class="legend-label">Acceptable</span></div>
+      <div class="legend-row"><div class="legend-dot" style="background:var(--r-bon)"></div><span class="legend-label">Bon</span></div>
+      <div class="nav-divider"></div>
+      <div class="nav-meta">
+        <strong>Version</strong> 1.0<br>
+        <strong>Date</strong> Août 2026<br>
+        <strong>Périmètre</strong> FR · DE · ES · IT · UK · CA · US<br>
+        <strong>Auteur</strong> Architecture Logicielle
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="main-content">
+
+    <!-- Doc header -->
+    <div class="doc-header">
+      <div class="doc-eyebrow">Rapport d'Audit · Avant Migration vers la Plateforme Unifiée</div>
+      <h1 class="doc-title">Audit Technique<br>des Applications Existantes</h1>
+      <p class="doc-subtitle">Ce rapport évalue l'état technique du portefeuille applicatif actuel de Your Car Your Way sur trois critères structurants — maintenabilité, performance &amp; disponibilité, évolutivité — en vue de justifier la nécessité d'une refonte unifiée.</p>
+      <div class="doc-meta-row">
+        <div class="doc-meta-item"><span class="doc-meta-label">Applications auditées</span><span class="doc-meta-val">4 groupes / 7 pays</span></div>
+        <div class="doc-meta-item"><span class="doc-meta-label">Stacks identifiées</span><span class="doc-meta-val">5 technologies distinctes</span></div>
+        <div class="doc-meta-item"><span class="doc-meta-label">Hébergeurs</span><span class="doc-meta-val">OVH · AWS · Azure</span></div>
+        <div class="doc-meta-item"><span class="doc-meta-label">Architecture dominante</span><span class="doc-meta-val">Monolithe (4/4 groupes)</span></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- 1. CRITÈRES D'ÉVALUATION                       -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="section" id="criteres">
+      <div class="section-header">
+        <span class="section-num">Section 01</span>
+        <h2 class="section-title">Critères d'Évaluation</h2>
+      </div>
+      <div class="prose" style="margin-bottom:20px;">
+        <p>L'audit repose sur trois critères fondamentaux, sélectionnés pour leur pertinence directe vis-à-vis de l'objectif stratégique : la création d'une plateforme web centralisée, opérant simultanément sur sept marchés. Chaque critère est objectivable par des indicateurs mesurables issus des données collectées.</p>
+      </div>
+      <div class="criteria-grid">
+        <div class="criteria-card">
+          <div class="criteria-icon">🔧</div>
+          <div class="criteria-title">Maintenabilité</div>
+          <div class="criteria-body">Capacité de l'équipe à corriger, faire évoluer et tester le code en toute sécurité. Elle se mesure par le taux de déploiements réussis, le délai de stabilisation post-release et la surface de dette technique (vulnérabilités, duplication de code, obsolescence des stacks). Une maintenabilité dégradée se traduit par un coût d'évolution élevé et un risque de régression important à chaque modification.</div>
+        </div>
+        <div class="criteria-card">
+          <div class="criteria-icon">⚡</div>
+          <div class="criteria-title">Performance &amp; Disponibilité</div>
+          <div class="criteria-body">Capacité de l'application à répondre aux pics de charge sans dégrader l'expérience utilisateur, et à maintenir un taux de disponibilité conforme aux attentes d'un service commercial international. Les indicateurs retenus sont : la disponibilité (SLA effectif), le MTTR, le taux d'erreur en pic de charge, la capacité maximale en req/s et le temps d'indisponibilité mensuel constaté.</div>
+        </div>
+        <div class="criteria-card">
+          <div class="criteria-icon">📈</div>
+          <div class="criteria-title">Évolutivité</div>
+          <div class="criteria-body">Capacité de l'architecture à s'adapter à la croissance du trafic, à l'ajout de nouveaux marchés et à l'unification des fonctionnalités. Elle couvre la modularité de l'architecture (monolithe vs. services découplés), la scalabilité (horizontale ou verticale), la qualité des API exposées et la capacité à absorber les variations saisonnières sans refonte majeure.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- 2. ANALYSE PAR APPLICATION                     -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="section" id="analyse">
+      <div class="section-header">
+        <span class="section-num">Section 02</span>
+        <h2 class="section-title">Analyse par Application</h2>
+      </div>
+      <div class="prose" style="margin-bottom:24px;">
+        <p>Chaque groupe d'applications est analysé sur son architecture, ses points forts observés et les risques techniques identifiés, en s'appuyant exclusivement sur les données opérationnelles disponibles.</p>
+      </div>
+
+      <!-- FR/DE/ES/IT -->
+      <div class="app-block">
+        <div class="app-block-head">
+          <div class="app-flag">🇫🇷🇩🇪🇪🇸🇮🇹</div>
+          <div class="app-head-info">
+            <div class="app-title">France · Allemagne · Espagne · Italie</div>
+            <div class="app-stack">Java EE · JSP/JSF · Monolithe complet · OVH · Déploiements manuels</div>
+          </div>
+          <div class="app-kpi-row">
+            <div class="kpi-chip"><span class="kpi-val bad">97,2 %</span><span class="kpi-label">Dispo.</span></div>
+            <div class="kpi-chip"><span class="kpi-val bad">2h 45</span><span class="kpi-label">MTTR</span></div>
+            <div class="kpi-chip"><span class="kpi-val bad">82 %</span><span class="kpi-label">Dépl. OK</span></div>
+            <div class="kpi-chip"><span class="kpi-val bad">4 %</span><span class="kpi-label">Err. pics</span></div>
+            <div class="kpi-chip"><span class="kpi-val bad">41 %</span><span class="kpi-label">Vuln. FR</span></div>
+          </div>
+        </div>
+        <div class="app-body">
+          <div class="app-col pos">
+            <div class="app-col-title col-title-pos">Points forts</div>
+            <ul>
+              <li>Logique métier mature et éprouvée sur plusieurs années de production, couvrant les quatre marchés les plus anciens du groupe.</li>
+              <li>Connaissance fonctionnelle profonde des règles de réservation propres à chaque marché, documentée (implicitement) dans le code.</li>
+              <li>Base utilisateur et de données la plus volumineuse du groupe, fournissant un référentiel de données fonctionnelles précieux pour la migration.</li>
+            </ul>
+          </div>
+          <div class="app-col neg">
+            <div class="app-col-title col-title-neg">Risques identifiés</div>
+            <ul>
+              <li><strong>Architecture :</strong> Monolithe sans redondance — une défaillance serveur entraîne une indisponibilité totale. Confirmé par <span class="data-tag bad">21–28 min</span> d'indisponibilité mensuelle constatée.</li>
+              <li><strong>Maintenabilité :</strong> Taux de déploiements réussis de <span class="data-tag bad">82 %</span> et délai de stabilisation de <span class="data-tag bad">3,4 jours</span> — les plus élevés de l'ensemble du portefeuille. Chaque release est un événement à risque élevé.</li>
+              <li><strong>Charge :</strong> Capacité limitée à <span class="data-tag bad">≈ 150 req/s</span>. Le taux d'erreur atteint <span class="data-tag bad">4 %</span> en pic saisonnier, signifiant qu'un client sur 25 essuie une erreur lors des périodes critiques (été, fêtes).</li>
+              <li><strong>Sécurité critique :</strong> Hachage des mots de passe en <span class="data-tag bad">SHA-1</span> (algorithme cassé depuis 2017), TLS 1.0 encore actif sur FR et IT (protocole déprécié depuis 2020), secrets stockés en fichiers de configuration sur les serveurs OVH. Vulnérabilités packages : <span class="data-tag bad">41 %</span> sur FR, <span class="data-tag bad">35–40 %</span> sur DE/ES/IT.</li>
+              <li><strong>Dette de code :</strong> Code copié et adapté entre pays au lieu d'être partagé — divergence fonctionnelle progressive rendant toute évolution commune exponentiellement coûteuse.</li>
+              <li><strong>Backups :</strong> Manuels, quotidiens, avec une procédure de restauration qui n'a jamais été testée — aucune garantie de RPO en cas de sinistre.</li>
+              <li><strong>Stack obsolète :</strong> Java EE et JSP/JSF sont des technologies largement abandonnées par l'industrie, réduisant considérablement le vivier de développeurs disponibles et compétents.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- UK -->
+      <div class="app-block">
+        <div class="app-block-head">
+          <div class="app-flag">🇬🇧</div>
+          <div class="app-head-info">
+            <div class="app-title">Royaume-Uni</div>
+            <div class="app-stack">PHP Laravel · Monolithe · AWS EC2 · Déploiement CI</div>
+          </div>
+          <div class="app-kpi-row">
+            <div class="kpi-chip"><span class="kpi-val warn">98,6 %</span><span class="kpi-label">Dispo.</span></div>
+            <div class="kpi-chip"><span class="kpi-val warn">1h 10</span><span class="kpi-label">MTTR</span></div>
+            <div class="kpi-chip"><span class="kpi-val ok">91 %</span><span class="kpi-label">Dépl. OK</span></div>
+            <div class="kpi-chip"><span class="kpi-val warn">1,5 %</span><span class="kpi-label">Err. pics</span></div>
+            <div class="kpi-chip"><span class="kpi-val warn">18 %</span><span class="kpi-label">Vuln.</span></div>
+          </div>
+        </div>
+        <div class="app-body">
+          <div class="app-col pos">
+            <div class="app-col-title col-title-pos">Points forts</div>
+            <ul>
+              <li>Application plus récente que le groupe continental, bénéficiant d'une stack moderne et d'un processus de déploiement partiellement automatisé : taux de succès à <span class="data-tag ok">91 %</span> et délai de stabilisation réduit à <span class="data-tag ok">1,7 jour</span>.</li>
+              <li>Hébergement AWS permettant une redondance partielle et des snapshots quotidiens automatiques, réduisant le risque de perte de données.</li>
+              <li>Hachage des mots de passe en <span class="data-tag ok">bcrypt (cost 10)</span> — algorithme robuste et adapté à l'usage.</li>
+              <li>MTTR de <span class="data-tag ok">1h10</span>, significativement inférieur au groupe FR/DE/ES/IT (<span class="data-tag bad">2h45</span>), témoignant d'une meilleure capacité de réaction.</li>
+            </ul>
+          </div>
+          <div class="app-col neg">
+            <div class="app-col-title col-title-neg">Risques identifiés</div>
+            <ul>
+              <li><strong>Isolation structurelle :</strong> Modèle de données et règles de réservation fortement divergents du reste du groupe — toute tentative d'unification implique un travail de réconciliation schéma substantiel.</li>
+              <li><strong>Monolithe :</strong> Toujours un monolithe non découplé, limitant la scalabilité horizontale sélective. La redondance est qualifiée de "partielle" sans être totale.</li>
+              <li><strong>Sécurité :</strong> Secrets gérés en variables d'environnement AWS sans rotation documentée — un vecteur d'exposition persistant en cas de compromission d'une clé. Taux de vulnérabilités packages à <span class="data-tag warn">18 %</span>.</li>
+              <li><strong>Capacité :</strong> Plafond à <span class="data-tag warn">≈ 250 req/s</span>, taux d'erreur en pic à <span class="data-tag warn">1,5 %</span>. Insuffisant pour absorber le trafic agrégé d'une plateforme unifiée.</li>
+              <li><strong>Backups :</strong> Snapshots automatiques mais sans tests réguliers de restauration — le RPO effectif n'est pas garanti en conditions réelles.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- CA -->
+      <div class="app-block">
+        <div class="app-block-head">
+          <div class="app-flag">🇨🇦</div>
+          <div class="app-head-info">
+            <div class="app-title">Canada</div>
+            <div class="app-stack">React · Node.js · Monolithe backend · AWS</div>
+          </div>
+          <div class="app-kpi-row">
+            <div class="kpi-chip"><span class="kpi-val warn">98,1 %</span><span class="kpi-label">Dispo.</span></div>
+            <div class="kpi-chip"><span class="kpi-val warn">1,7 j</span><span class="kpi-label">Stabilisati.</span></div>
+            <div class="kpi-chip"><span class="kpi-val warn">1,5 %</span><span class="kpi-label">Err. pics</span></div>
+            <div class="kpi-chip"><span class="kpi-val warn">22 %</span><span class="kpi-label">Vuln.</span></div>
+            <div class="kpi-chip"><span class="kpi-val ok">300</span><span class="kpi-label">Req/s max</span></div>
+          </div>
+        </div>
+        <div class="app-body">
+          <div class="app-col pos">
+            <div class="app-col-title col-title-pos">Points forts</div>
+            <ul>
+              <li>La seule application du groupe à dissocier frontend (React) et backend (Node.js) — une architecture de présentation qui anticipe les principes d'une SPA moderne et offre une meilleure UX mesurée.</li>
+              <li>Hachage des mots de passe en <span class="data-tag good">argon2id</span> — l'algorithme le plus robuste de l'ensemble du portefeuille, recommandé par l'OWASP.</li>
+              <li>Hébergement AWS avec redondance partielle et capacité maximale de <span class="data-tag ok">≈ 300 req/s</span> — la plus haute du groupe continental/UK.</li>
+              <li>Preuve de concept de l'unification visuelle : la démarche de standardisation de l'UX est initiée, même si elle est restée locale.</li>
+            </ul>
+          </div>
+          <div class="app-col neg">
+            <div class="app-col-title col-title-neg">Risques identifiés</div>
+            <ul>
+              <li><strong>Backend monolithique :</strong> Malgré la modernité du frontend, le backend Node.js reste monolithique — la dette architecturale réside côté serveur, qui concentre les risques de scalabilité.</li>
+              <li><strong>Sécurité :</strong> Taux de vulnérabilités packages à <span class="data-tag warn">22 %</span> — paradoxalement plus élevé que l'application UK malgré une stack plus récente, signalant un processus de mise à jour des dépendances insuffisant. Secrets sans rotation.</li>
+              <li><strong>Isolation :</strong> Tentative d'unification avortée et restée locale — l'application Canada ne partage aucune donnée ni API avec les autres marchés, perpétuant la fragmentation.</li>
+              <li><strong>Disponibilité :</strong> <span class="data-tag warn">98,1 %</span> avec <span class="data-tag warn">9–16 min</span> d'indisponibilité mensuelle — et une base non redondante qui constitue un point unique de défaillance.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- US -->
+      <div class="app-block">
+        <div class="app-block-head">
+          <div class="app-flag">🇺🇸</div>
+          <div class="app-head-info">
+            <div class="app-title">États-Unis</div>
+            <div class="app-stack">Angular · Spring Boot · Containerisé (Docker) · Azure</div>
+          </div>
+          <div class="app-kpi-row">
+            <div class="kpi-chip"><span class="kpi-val good">98,9 %</span><span class="kpi-label">Dispo.</span></div>
+            <div class="kpi-chip"><span class="kpi-val good">1h 10</span><span class="kpi-label">MTTR</span></div>
+            <div class="kpi-chip"><span class="kpi-val good">91 %</span><span class="kpi-label">Dépl. OK</span></div>
+            <div class="kpi-chip"><span class="kpi-val good">0,8 %</span><span class="kpi-label">Err. pics</span></div>
+            <div class="kpi-chip"><span class="kpi-val good">11 %</span><span class="kpi-label">Vuln.</span></div>
+          </div>
+        </div>
+        <div class="app-body">
+          <div class="app-col pos">
+            <div class="app-col-title col-title-pos">Points forts</div>
+            <ul>
+              <li><strong>Seule application containerisée</strong> du portefeuille — ce choix architectural offre une portabilité, une reproductibilité des environnements et une agilité au déploiement absentes des autres groupes.</li>
+              <li>Meilleure disponibilité du portefeuille : <span class="data-tag good">98,9 %</span>, avec seulement <span class="data-tag good">7 min</span> d'indisponibilité mensuelle et un MTTR de <span class="data-tag good">1h10</span>.</li>
+              <li>Taux d'erreur en pic le plus bas : <span class="data-tag good">0,8 %</span>, et taux de vulnérabilités packages le plus faible : <span class="data-tag good">11 %</span> — témoignant d'une rigueur sur la gouvernance des dépendances.</li>
+              <li>Utilisation partielle d'Azure KeyVault pour la gestion des secrets — une bonne pratique absente de tous les autres groupes.</li>
+              <li>Tests de restauration des backups tous les 90 jours — la seule application à valider effectivement ses sauvegardes.</li>
+              <li>Spring Boot, Angular et Docker forment un triptyque technique actuel et doté d'un écosystème de compétences large.</li>
+            </ul>
+          </div>
+          <div class="app-col neg">
+            <div class="app-col-title col-title-neg">Risques identifiés</div>
+            <ul>
+              <li><strong>Isolation :</strong> L'application US est la plus performante du groupe mais n'a jamais été généralisée — ses pratiques positives n'ont pas diffusé aux autres marchés, chaque équipe ayant opéré en silo.</li>
+              <li><strong>Base de données non redondante :</strong> Malgré la containerisation de l'applicatif, la base de données reste sans redondance — un point unique de défaillance critique pour une application autrement bien conçue.</li>
+              <li><strong>Secrets partiellement gérés :</strong> Azure KeyVault est utilisé de manière partielle — certains secrets restent potentiellement exposés hors du vault.</li>
+              <li><strong>Divergence schéma :</strong> Comme tous les autres groupes, le modèle de données US est local et incompatible avec les autres marchés — aucune interopérabilité n'existe.</li>
+              <li><strong>Capacité :</strong> Plafond à <span class="data-tag ok">≈ 350 req/s</span> — suffisant pour le marché US isolé, mais insuffisant pour absorber le volume agrégé d'une plateforme unifiée à sept pays.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- 3. ANALYSE TRANSVERSE                          -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="section" id="transverse">
+      <div class="section-header">
+        <span class="section-num">Section 03</span>
+        <h2 class="section-title">Analyse Globale — Architecture Transverse</h2>
+      </div>
+      <div class="prose" style="margin-bottom:24px;">
+        <p>Au-delà des particularités de chaque groupe, l'analyse révèle quatre problèmes structurels communs qui affectent l'ensemble du portefeuille applicatif. Ces dysfonctionnements systémiques sont indépendants des choix technologiques locaux et constituent les obstacles fondamentaux à toute expansion internationale.</p>
+      </div>
+
+      <div class="risk-grid">
+
+        <div class="risk-card">
+          <div class="risk-title">🗄️ Fragmentation des données</div>
+          <div class="risk-body">
+            Chaque groupe d'applications maintient sa propre base de données avec un schéma divergent et incompatible. Il n'existe <strong>aucun référentiel partagé</strong> — ni utilisateurs, ni véhicules, ni réservations. Un client ayant loué en France et au Royaume-Uni n'a aucune existence unifiée dans le système. Cette fragmentation rend impossible l'historique global, le programme de fidélité cross-pays et tout reporting consolidé. La migration vers un schéma unifié impliquera un travail de réconciliation et de déduplication de données à très haute complexité.
+          </div>
+        </div>
+
+        <div class="risk-card">
+          <div class="risk-title">🔌 Absence d'API unifiée</div>
+          <div class="risk-body">
+            Les quatre groupes exposent des API hétérogènes, non documentées de manière uniforme et incompatibles entre elles. <strong>Aucun contrat d'API commun</strong> ne permet aujourd'hui à une application d'agence ou à un partenaire externe d'interagir avec l'ensemble du parc de manière cohérente. Cette absence d'API unifiée est un frein direct à l'intégration de tiers (GDS, agrégateurs de voyage, assureurs) et constitue un désavantage concurrentiel mesurable.
+          </div>
+        </div>
+
+        <div class="risk-card warn">
+          <div class="risk-title">⚠️ Hétérogénéité technique et dette accumulée</div>
+          <div class="risk-body">
+            Le portefeuille utilise <strong>5 stacks techniques distinctes</strong> (Java EE/JSP, PHP Laravel, Node.js, Spring Boot, Angular/React) sur <strong>3 hébergeurs différents</strong> (OVH, AWS, Azure). Cette hétérogénéité fragmentait les compétences et multiplie les coûts de maintenance. La dette technique est quantifiable : le groupe le plus fragile (FR/DE/ES/IT) présente un taux de déploiements réussis de <strong>82 %</strong> et un délai de stabilisation de <strong>3,4 jours</strong> — ce qui signifie qu'en production courante, environ <strong>une release sur cinq est problématique</strong> et nécessite trois jours et demi pour se stabiliser.
+          </div>
+        </div>
+
+        <div class="risk-card">
+          <div class="risk-title">🔓 Risques sécuritaires transverses</div>
+          <div class="risk-body">
+            Trois vecteurs de risque critiques traversent l'ensemble du portefeuille. <strong>Premièrement</strong>, le groupe FR/DE/ES/IT utilise SHA-1 pour hacher les mots de passe — un algorithme cassé par attaque par collision depuis 2017, exposant l'ensemble de la base utilisateurs européenne continentale à un risque de compromission en cas de fuite de données. <strong>Deuxièmement</strong>, TLS 1.0 est encore actif sur FR et IT, un protocole officiellement déprécié par le PCI-DSS depuis 2018. <strong>Troisièmement</strong>, aucun groupe ne pratique la rotation des secrets applicatifs — les tokens et clés d'API sont statiques, sans durée de vie limitée.
+          </div>
+        </div>
+
+        <div class="risk-card warn">
+          <div class="risk-title">📉 Indisponibilité et absence de résilience</div>
+          <div class="risk-body">
+            Trois des quatre groupes (FR/DE/ES/IT, CA, UK) présentent une <strong>redondance absente ou partielle</strong>. Le groupe continental cumule <strong>21 à 28 minutes d'indisponibilité mensuelle</strong>, soit une disponibilité effective de 97,2 % — loin en-deçà du SLA cible de 99,9 % défini dans le cahier des charges de la nouvelle plateforme. Même l'application la plus performante (US, 98,9 %) reste sur une base de données sans redondance, ce qui constitue un point unique de défaillance non acceptable pour une plateforme internationale.
+          </div>
+        </div>
+
+        <div class="risk-card warn">
+          <div class="risk-title">🚫 Scalabilité structurellement limitée</div>
+          <div class="risk-body">
+            L'ensemble du portefeuille repose sur des architectures monolithiques, dont la scalabilité est exclusivement verticale (augmenter la puissance d'un seul serveur). La capacité maximale agrégée constatée va de <strong>150 req/s</strong> (FR/DE/ES/IT) à <strong>350 req/s</strong> (US). En agrégeant les sept marchés sur une plateforme unique, le volume de trafic cumulé en pic dépasse structurellement les capacités de n'importe lequel de ces monolithes, sans possibilité de mise à l'échelle horizontale sélective par composant.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- 4. TABLEAU DE SYNTHÈSE                         -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="section" id="synthese">
+      <div class="section-header">
+        <span class="section-num">Section 04</span>
+        <h2 class="section-title">Tableau de Synthèse</h2>
+      </div>
+      <div class="prose" style="margin-bottom:20px;">
+        <p>Le tableau suivant récapitule la notation de chaque groupe d'applications sur les cinq critères de l'audit. Chaque niveau de notation est ancré sur les données chiffrées présentées dans les sections précédentes.</p>
+      </div>
+      <div class="table-wrap">
+        <table class="synth-table">
+          <thead>
+            <tr>
+              <th>Application</th>
+              <th>Maintenabilité</th>
+              <th>Performance</th>
+              <th>Sécurité</th>
+              <th>Évolutivité</th>
+              <th>Disponibilité</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-head">🇫🇷🇩🇪🇪🇸🇮🇹<br><span style="font-size:11px;font-weight:500;color:var(--text-3)">FR · DE · ES · IT</span></td>
+              <td><span class="badge-r r-crit">Critique</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">82 % dépl. · 3,4 j stab.</span></td>
+              <td><span class="badge-r r-crit">Critique</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">150 req/s · 4 % erreur</span></td>
+              <td><span class="badge-r r-crit">Critique</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">SHA-1 · TLS 1.0 · 41 % vuln.</span></td>
+              <td><span class="badge-r r-crit">Critique</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">Monolithe · 0 API · 0 redond.</span></td>
+              <td><span class="badge-r r-crit">Critique</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">97,2 % · 28 min/mois</span></td>
+            </tr>
+            <tr>
+              <td class="row-head">🇬🇧<br><span style="font-size:11px;font-weight:500;color:var(--text-3)">Royaume-Uni</span></td>
+              <td><span class="badge-r r-accept">Acceptable</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">91 % dépl. · 1,7 j stab.</span></td>
+              <td><span class="badge-r r-insuf">Insuffisant</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">250 req/s · 1,5 % erreur</span></td>
+              <td><span class="badge-r r-insuf">Insuffisant</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">bcrypt OK · 18 % vuln. · secrets statiques</span></td>
+              <td><span class="badge-r r-insuf">Insuffisant</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">Monolithe · schéma isolé</span></td>
+              <td><span class="badge-r r-accept">Acceptable</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">98,6 % · 9–16 min/mois</span></td>
+            </tr>
+            <tr>
+              <td class="row-head">🇨🇦<br><span style="font-size:11px;font-weight:500;color:var(--text-3)">Canada</span></td>
+              <td><span class="badge-r r-accept">Acceptable</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">1,7 j stab. · stack moderne</span></td>
+              <td><span class="badge-r r-insuf">Insuffisant</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">300 req/s · 1,5 % erreur</span></td>
+              <td><span class="badge-r r-insuf">Insuffisant</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">Argon2id ✓ · 22 % vuln. · secrets statiques</span></td>
+              <td><span class="badge-r r-insuf">Insuffisant</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">Backend monolithe · silo local</span></td>
+              <td><span class="badge-r r-accept">Acceptable</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">98,1 % · 9–16 min/mois</span></td>
+            </tr>
+            <tr>
+              <td class="row-head">🇺🇸<br><span style="font-size:11px;font-weight:500;color:var(--text-3)">États-Unis</span></td>
+              <td><span class="badge-r r-bon">Bon</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">91 % dépl. · stack containerisée</span></td>
+              <td><span class="badge-r r-accept">Acceptable</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">350 req/s · 0,8 % erreur</span></td>
+              <td><span class="badge-r r-accept">Acceptable</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">bcrypt 12 · KeyVault (partiel) · 11 % vuln.</span></td>
+              <td><span class="badge-r r-insuf">Insuffisant</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">Containerisé mais non généralisé · BD non redond.</span></td>
+              <td><span class="badge-r r-bon">Bon</span><br><span style="font-size:11px;color:var(--text-3);display:block;margin-top:4px">98,9 % · 7 min/mois</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:14px; padding:12px 16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);">
+        <p style="font-family:'Barlow',sans-serif;font-size:12px;color:var(--text-3);line-height:1.5;">
+          <strong style="color:var(--text-2)">Lecture du tableau :</strong>
+          <span class="badge-r r-crit" style="font-size:9.5px;padding:2px 6px;">Critique</span> = risque immédiat, bloquant pour la mise en production internationale ·
+          <span class="badge-r r-insuf" style="font-size:9.5px;padding:2px 6px;">Insuffisant</span> = ne répond pas aux exigences cibles, nécessite remédiation ·
+          <span class="badge-r r-accept" style="font-size:9.5px;padding:2px 6px;">Acceptable</span> = répond partiellement aux exigences, améliorable ·
+          <span class="badge-r r-bon" style="font-size:9.5px;padding:2px 6px;">Bon</span> = répond aux exigences actuelles du périmètre local, transposable.
+        </p>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- 5. CONCLUSION                                  -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="section" id="conclusion">
+      <div class="section-header">
+        <span class="section-num">Section 05</span>
+        <h2 class="section-title">Conclusion de l'Audit</h2>
+      </div>
+
+      <div class="conclusion-banner">
+        <div class="conclusion-banner-title">⚠ Verdict — Non : l'existant ne valide pas les critères requis</div>
+        <p>L'audit démontre que le portefeuille applicatif actuel de Your Car Your Way <strong>ne satisfait aucun des trois critères</strong> de maintenabilité, performance et évolutivité nécessaires à une expansion internationale réussie, y compris pour les applications les plus récentes. Cette conclusion est étayée par les données opérationnelles collectées sur chacun des groupes.</p>
+      </div>
+
+      <div class="finding-block">
+        <div class="finding-title"><span style="font-size:16px">🔧</span> Maintenabilité — Non validée</div>
+        <div class="finding-body">
+          Le critère de maintenabilité est défaillant sur l'ensemble du portefeuille, avec des degrés variables. Le groupe le plus critique — FR/DE/ES/IT — affiche un taux de déploiements réussis de <strong>82 %</strong> et un délai de stabilisation post-release de <strong>3,4 jours</strong>, ce qui signifie qu'en rythme de releases mensuel, l'équipe consacre structurellement plus d'une semaine par mois à gérer les instabilités produites par ses propres déploiements. La duplication de code entre les quatre marchés continentaux crée une divergence progressive qui rend chaque évolution commune exponentiellement plus coûteuse. Même les applications US et UK, mieux notées sur ce critère, ne disposent pas d'une architecture modulaire permettant de modifier un composant sans risquer d'impacter l'ensemble du monolithe.
+        </div>
+      </div>
+
+      <div class="finding-block">
+        <div class="finding-title"><span style="font-size:16px">⚡</span> Performance &amp; Disponibilité — Non validée</div>
+        <div class="finding-body">
+          Aucun groupe n'atteint le SLA cible de <strong>99,9 %</strong> défini pour la plateforme unifiée. Le groupe FR/DE/ES/IT se situe à <strong>97,2 %</strong> — soit un écart de 28 à 42 minutes d'indisponibilité mensuelle supplémentaire par rapport à la cible. L'application US, meilleure du portefeuille à <strong>98,9 %</strong>, en est encore à <strong>0,9 point de pourcentage</strong> — ce qui représente concrètement 43 minutes d'indisponibilité supplémentaire par mois. En pic de charge, le taux d'erreur du groupe continental atteint <strong>4 %</strong> — un niveau incompatible avec un service commercial à ambition internationale. La capacité maximale agrégée reste insuffisante pour absorber le trafic cumulé de sept marchés sur un seul point d'entrée.
+        </div>
+      </div>
+
+      <div class="finding-block">
+        <div class="finding-title"><span style="font-size:16px">📈</span> Évolutivité — Non validée</div>
+        <div class="finding-body">
+          L'ensemble du portefeuille repose sur des <strong>architectures monolithiques à scalabilité uniquement verticale</strong>. Aucune application ne dispose d'une capacité de mise à l'échelle horizontale sélective. La fragmentation des schémas de données entre les quatre groupes rend toute unification des données sans migration profonde impossible. L'absence d'API unifiée empêche toute intégration cohérente avec des partenaires ou agrégateurs tiers. Même l'application US — la seule containerisée — n'a pas été généralisée aux autres marchés depuis sa mise en production, démontrant qu'une approche incrémentale sur la base de l'existant n'a historiquement pas fonctionné.
+        </div>
+      </div>
+
+      <div class="finding-block">
+        <div class="finding-title"><span style="font-size:16px">🔒</span> Risque additionnel — Sécurité</div>
+        <div class="finding-body">
+          Au-delà des trois critères de l'audit, les données révèlent un risque sécuritaire immédiat sur le groupe FR/DE/ES/IT : l'utilisation de <strong>SHA-1 pour le hachage des mots de passe</strong> expose l'ensemble de la base utilisateurs européenne continentale à un risque de compromission en cas de fuite de données. TLS 1.0 actif sur FR et IT constitue une non-conformité PCI-DSS documentée. Ces deux points exigent une remédiation immédiate, indépendamment du calendrier de migration vers la nouvelle plateforme.
+        </div>
+      </div>
+
+      <div style="margin-top:20px; padding:16px 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); border-top:2px solid var(--accent);">
+        <div style="font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;color:var(--text-1);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Recommandation de l'audit</div>
+        <p style="font-size:14px;color:var(--text-2);line-height:1.65;">L'audit conclut que l'existant ne peut constituer la base d'une plateforme internationale unifiée par évolution incrémentale. Les déficiences sont systémiques — elles concernent l'architecture, les données, la sécurité et les processus — et non rattrapables par des correctifs locaux. La conception d'une nouvelle plateforme ex nihilo, capitalisant sur les bonnes pratiques identifiées dans l'application US (containerisation, bcrypt, monitoring), est la voie techniquement justifiée. Ce rapport ne formule pas de solution — cette phase fait l'objet d'un document distinct.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-copy">© 2026 Your Car Your Way — Document confidentiel, usage interne uniquement.</span>
+    <span class="footer-copy">Audit Technique v1.0 · Architecture Logicielle</span>
+  </div>
+</footer>
+
+<script>
+(function() {
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('.nav-list a');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+      }
+    });
+  }, { threshold: 0.2 });
+  sections.forEach(s => obs.observe(s));
+})();
+</script>
+
+</body>
+</html>
